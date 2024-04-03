@@ -22,7 +22,7 @@ catboost = "^1.2.2"
 scikit-learn = "^1.3.2"
 scikit-image = "^0.22.0"
 opencv-python = "^4.8.1.78"
-pillow = "^10.1.0"
+pillow = "^10.3.0"
 # torch stuff
 torch = "^2.1.1"
 torchvision = "^0.16.1"
