@@ -18,9 +18,13 @@ dvc pull
 
 ## FastAPI и телеграм бот
 
+FastAPI
+
 ```shell
 bash run-app.sh
 ```
+
+Telegram bot
 
 ```shell
 python sneakers_ml/bot/main.py
