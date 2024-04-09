@@ -14,7 +14,7 @@ poetry install --with api,bot,data-eda,dev
 dvc pull
 ```
 
-Конфигурация производится с помощью Hydra. Она хранится в папке [config](config) и используется по всему проекту
+Конфигурация производится с помощью Hydra. Она хранится в папке [config](/config) и используется по всему проекту
 
 ## FastAPI и телеграм бот
 
@@ -29,7 +29,7 @@ python sneakers_ml/data/parser/sneakerbaas.py
 Объединение данных
 
 ```shell
-sneakers_ml/data/merger/merger.py
+python sneakers_ml/data/merger/merger.py
 ```
 
 Генерация признаков всеми используемыми методами

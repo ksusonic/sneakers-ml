@@ -17,12 +17,12 @@ ML часть проекта будет заключатся в обучении
 
 ## Документация проекта
 
-- [Презентации чекпоинтов](docs/presentations)
-- [Структура проекта](docs/project-setup.md)
-- [Описание данных](docs/data-description.md)
-- [Объединение данных и eda](docs/eda-merging.md)
-- [Описание моделей и эмбеддингов](docs/features-models.md)
-- **[Инструкции по запуску](docs/launch-instructions.md)**
+- [Презентации чекпоинтов](/docs/presentations)
+- [Структура проекта](/docs/project-setup.md)
+- [Описание данных](/docs/data-description.md)
+- [Объединение данных и eda](/docs/eda-merging.md)
+- [Описание моделей и эмбеддингов](/docs/features-models.md)
+- **[Инструкции по запуску](/docs/launch-instructions.md)**
 
 ## Пример работы телеграм бота
 
