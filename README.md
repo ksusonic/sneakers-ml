@@ -1,21 +1,31 @@
+# Платформа для поиска похожих кроссовок
+
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/miem-refugees/sneakers-ml/trunk.svg)](https://results.pre-commit.ci/latest/github/miem-refugees/sneakers-ml/trunk)
 [![API docker](https://github.com/miem-refugees/sneakers-ml/actions/workflows/build-api.yml/badge.svg)](https://github.com/miem-refugees/sneakers-ml/actions/workflows/build-api.yml)
 [![BOT docker](https://github.com/miem-refugees/sneakers-ml/actions/workflows/build-bot.yml/badge.svg)](https://github.com/miem-refugees/sneakers-ml/actions/workflows/build-bot.yml)
 [![codecov](https://codecov.io/gh/miem-refugees/sneakers-ml/graph/badge.svg?token=ZTQC72KIPN)](https://codecov.io/gh/miem-refugees/sneakers-ml)
 
-# Платформа для поиска похожих кроссовок
-
 ## [Цель проекта](https://docs.google.com/document/d/1Gdz3_W7x7L9Ff1-Sl61Cv3L6GHBiceH863Vn1ucXzjU/edit#heading=h.j88xs4dca7be)
 
-Цель данного проекта - построить систему поиска похожих кроссовок по изображениям (задача-CV). В проекте планируется реализовать парсинг данных, а именно картинок и дополнительных метаданных. Далее следует этап чистки, обработки и объединения данных. ML часть проекта будет заключатся в обучении классификаторов изображений кроссовок по брендам. В DL части будет улучшено качество классификации с помощью продвинутных моделей, а так же решены другие задачи, такие как image2image поиск и similarity learning. В результате полученные модели будут обернуты в телеграм бот или streamlit сервис.
+Цель данного проекта - построить систему поиска похожих кроссовок по изображениям (задача-CV).
+В проекте планируется реализовать парсинг данных, а именно картинок и дополнительных метаданных.
+Далее следует этап чистки, обработки и объединения данных.
+ML часть проекта будет заключатся в обучении классификаторов изображений кроссовок по брендам.
+В DL части будет улучшено качество классификации с помощью продвинутных моделей, а так же решены другие задачи,
+такие как image2image поиск и similarity learning.
+В результате полученные модели будут обернуты в телеграм бот или streamlit сервис.
 
 ## Документация проекта
 
-- [Структура проекта](notes/project-setup.md)
-- [Описание данных sneakerbaas](notes/sneakerbaas.md)
-- [Описание данных superkicks](notes/superkicks.md)
-- [Объединение данных и eda](notes/eda-merging.md)
-- [Описание моделей и эмбеддингов](notes/features-models.md)
+- [Структура проекта](docs/project-setup.md)
+- [Описание данных sneakerbaas](docs/sneakerbaas.md)
+- [Описание данных superkicks](docs/superkicks.md)
+- [Объединение данных и eda](docs/eda-merging.md)
+- [Описание моделей и эмбеддингов](docs/features-models.md)
+
+## Пример работы телеграм бота
+
+![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
 
 ## Roadmap
 
@@ -45,19 +55,16 @@
     - [x] CatBoost
     - [x] Сохранение в onnx формате
   - [ ] Модели глубинного обучения
-    - [ ] ResNet
+    - [x] ResNet
     - [ ] Vision transformer
 - [ ] **Обёртка моделей**
+  - [x] FastAPI
   - [x] Telegram bot
   - [ ] streamlit
 - [ ] image2image
   - [ ] faiss
 - [ ] similarity learning
 - [ ] Возможно text2image, image2text
-
-## Пример работы телеграм бота
-
-![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
 
 ## Список членов команды
 
