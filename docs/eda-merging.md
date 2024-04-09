@@ -126,6 +126,9 @@
 - Аналоличная ситуация с эмбеддингами [`HOG`](/notebooks/features/HOG.ipynb).
 - В нем картинки делятся по ракурсам.
 - Для HOG делали crop картинок.
+
   ![image](https://github.com/miem-refugees/sneakers-ml/assets/57370975/41e81836-2dbe-459b-92a2-afca7537e605)
+
 - UMAP для HOG
+
   ![image](https://github.com/miem-refugees/sneakers-ml/assets/57370975/c7845ef5-9ba6-4721-8122-203c01ed563e)
