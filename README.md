@@ -23,6 +23,50 @@ ML часть проекта будет заключатся в обучении
 - [Объединение данных и eda](docs/eda-merging.md)
 - [Описание моделей и эмбеддингов](docs/features-models.md)
 
+## Инструкция по запуску
+
+- Общее
+
+Проект использует poetry в ккачестве менеджера библиотек Python.
+
+```shell
+poetry install --with api,bot,data-eda,dev
+```
+
+Проект использует dvc для хранения данных и моделей
+
+```shell
+dvc pull
+```
+
+Основная конфигурация хранится в папке [config](config)
+
+- Парсинг
+
+Для парсинга достаточно запустить файл соответствующий сайту
+
+```shell
+python sneakers_ml/data/parser/sneakerbaas.py
+```
+
+- Объединение данных
+
+```shell
+sneakers_ml/data/merger/merger.py
+```
+
+- Генерация признаков всеми используемыми методами
+
+```shell
+python sneakers_ml/features/base.py
+```
+
+- Обучение моделей
+
+```shell
+python sneakers_ml/models/train.py
+```
+
 ## Пример работы телеграм бота
 
 ![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
