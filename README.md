@@ -17,6 +17,7 @@ ML часть проекта будет заключатся в обучении
 
 ## Документация проекта
 
+- [Презентации чекпоинтов](docs/presentations)
 - [Структура проекта](docs/project-setup.md)
 - [Описание данных](docs/data-description.md)
 - [Объединение данных и eda](docs/eda-merging.md)
@@ -29,7 +30,7 @@ ML часть проекта будет заключатся в обучении
 ## Прогресс и задачи
 
 - На текущий момент обучили лучшую модель классификации Resnet152 в
-  черновике-ноутбуке notebooks/models/resnet_fine_tune.ipynb
+  [черновике-ноутбуке](notebooks/models/resnet_fine_tune.ipynb)
 - Планируем раскидать код ноутбука по файлам, возможно использовать
   PyTorch Lightning
 - Хотим попробовать Vision Transformer
