@@ -18,14 +18,26 @@ ML часть проекта будет заключатся в обучении
 ## Документация проекта
 
 - [Структура проекта](docs/project-setup.md)
-- [Описание данных sneakerbaas](docs/sneakerbaas.md)
-- [Описание данных superkicks](docs/superkicks.md)
+- [Описание данных](docs/data-description.md)
 - [Объединение данных и eda](docs/eda-merging.md)
 - [Описание моделей и эмбеддингов](docs/features-models.md)
 
 ## Пример работы телеграм бота
 
 ![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
+
+## Прогресс и задачи
+
+- На текущий момент обучили лучшую модель классификации Resnet152 в
+  черновике-ноутбуке notebooks/models/resnet_fine_tune.ipynb
+- Планируем раскидать код ноутбука по файлам, возможно использовать
+  PyTorch Lightning
+- Хотим попробовать Vision Transformer
+- Далее будем решать другие задачи, такие как image2image поиск, similarity
+  learning, text2image
+- Улучшение telegram-бота, интеграция API с Streamlit
+- Сборка датасета из изображений от пользователей через бота
+- Логирование, мониторинг и алерты production-окружений (streamlit, tg-bot)
 
 ## Roadmap
 
