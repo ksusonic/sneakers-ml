@@ -22,7 +22,9 @@ ML часть проекта будет заключатся в обучении
 - [Описание данных](/docs/data-description.md)
 - [Объединение данных и eda](/docs/eda-merging.md)
 - [Описание моделей и эмбеддингов](/docs/features-models.md)
-- **[Инструкции по запуску](/docs/launch-instructions.md)**
+- [Инструкции по запуску](/docs/launch-instructions.md)
+
+## Запуск docker
 
 ## Пример работы телеграм бота
 

@@ -18,6 +18,14 @@ dvc pull
 
 ## FastAPI и телеграм бот
 
+```shell
+bash run-app.sh
+```
+
+```shell
+python sneakers_ml/bot/main.py
+```
+
 ## Данные и ML
 
 Для парсинга достаточно запустить файл соответствующий сайту
