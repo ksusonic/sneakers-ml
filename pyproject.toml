@@ -48,7 +48,7 @@ requests = "^2.31.0"
 # data cleaning
 split-folders = "^0.5.1"
 pandarallel = "^1.6.5"
-tqdm = "^4.66.1"
+tqdm = "^4.66.3"
 # visualizations
 matplotlib = "^3.8.4"
 seaborn = "^0.13.0"
