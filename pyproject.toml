@@ -1,10 +1,67 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
 [tool.poetry]
 name = "sneakers-ml"
 version = "0.1.1"
 description = ""
-authors = ["MIEM"]
+authors = [
+  "MIEM",
+]
 license = "MIT"
 readme = "README.md"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.bot.dependencies]
+aiohttp = "^3.9.5"
+python-telegram-bot = "^21.1"
+loguru = "^0.7.2"
+
+[tool.poetry.group.bot]
+optional = true
+
+[tool.poetry.group.data-eda]
+optional = true
+
+[tool.poetry.group.api.dependencies]
+boto3 = "^1.34.93"
+fastapi = "^0.110.2"
+pydantic = "^2.7.1"
+pydantic-settings = "^2.2.1"
+python-multipart = "^0.0.9"
+redis = "^5.0.4"
+uvicorn = "^0.29.0"
+
+[tool.poetry.group.dev.dependencies]
+# do not add DVC to poetry, it is too slow
+# linting and formatting
+pre-commit = "^3.7.0"
+# for vscode
+isort = "^5.13.2"
+black = "^24.4.2"
+flake8 = "^7.0.0"
+flake8-bugbear = "^24.4.26"
+flake8-simplify = "^0.21.0"
+flake8-pyproject = "^1.2.3"
+ruff = "^0.4.2"
+mypy = "^1.10.0"
+pylint = "^3.1.0"
+# stubs for mypy type checking and code completions
+typing-extensions = "^4.11.0"
+pandas-stubs = "^2.2.1.240316"
+types-pillow = "^10.2.0.20240423"
+types-beautifulsoup4 = "^4.12.0.20240229"
+types-tqdm = "^4.66.0.20240417"
+types-seaborn = "^0.13.2.20240417"
+# tests
+pytest = "^8.2.0"
+pytest-cov = "^5.0.0"
+pytest-asyncio = "^0.23.5"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -33,9 +90,6 @@ wandb = "^0.16.6"
 hydra-core = "^1.3.2"
 loguru = "^0.7.2"
 
-[tool.poetry.group.data-eda]
-optional = true
-
 [tool.poetry.group.data-eda.dependencies]
 # jupyter
 ipywidgets = "^8.1.1"
@@ -54,82 +108,44 @@ matplotlib = "^3.8.4"
 seaborn = "^0.13.0"
 umap-learn = "^0.5.6"
 
-[tool.poetry.group.bot]
-optional = true
-
-[tool.poetry.group.bot.dependencies]
-aiohttp = "^3.9.5"
-python-telegram-bot = "^21.1"
-loguru = "^0.7.2"
-
 [tool.poetry.group.api]
 optional = true
 
-[tool.poetry.group.api.dependencies]
-boto3 = "^1.34.93"
-fastapi = "^0.110.2"
-pydantic = "^2.7.1"
-pydantic-settings = "^2.2.1"
-python-multipart = "^0.0.9"
-redis = "^5.0.4"
-uvicorn = "^0.29.0"
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-# do not add DVC to poetry, it is too slow
-# linting and formatting
-pre-commit = "^3.7.0"
-# for vscode
-isort = "^5.13.2"
-black = "^24.4.2"
-flake8 = "^7.0.0"
-flake8-bugbear = "^24.4.26"
-flake8-simplify = "^0.21.0"
-flake8-pyproject = "^1.2.3"
-ruff = "^0.4.2"
-mypy = "^1.10.0"
-pylint = "^3.1.0"
-# stubs for mypy type checking and code completions
-typing-extensions = "^4.11.0"
-pandas-stubs = "^2.2.1.240316"
-types-pillow = "^10.2.0.20240423"
-types-beautifulsoup4 = "^4.12.0.20240229"
-types-tqdm = "^4.66.0.20240417"
-types-seaborn = "^0.13.2.20240417"
-# tests
-pytest = "^8.2.0"
-pytest-cov = "^5.0.0"
-pytest-asyncio = "^0.23.5"
-
 [tool.black]
 line-length = 120
-target-version = ["py39"]
+target-version = [
+  "py39",
+]
 # skip-magic-trailing-comma = true
 
 [tool.ruff]
 target-version = "py39"
 line-length = 120
-extend-include = ["*.ipynb"]
+extend-include = [
+  "*.ipynb",
+]
 
 [tool.ruff.lint]
-select = ["ALL"]
+select = [
+  "ALL",
+]
 ignore = [
-    "D",      # documentation
-    "ANN101", # annotationg self in class methods, will be deprecated
-    "RUF012", # mutable class attributes type checking
-    "ANN102", # annotationg cls in class methods, will be deprecated
-    "COM812", # missing-trailing-comma
-    "FA100",  # future-annotations
-    "NPY002", # numpy random stuff
+  "D",      # documentation
+  "ANN101", # annotationg self in class methods, will be deprecated
+  "RUF012", # mutable class attributes type checking
+  "ANN102", # annotationg cls in class methods, will be deprecated
+  "COM812", # missing-trailing-comma
+  "FA100",  # future-annotations
+  "NPY002", # numpy random stuff
 ]
 
 [tool.isort]
 profile = "black"
 line_length = 120
 float_to_top = true
-known_third_party = ["wandb"]
+known_third_party = [
+  "wandb",
+]
 
 [tool.flake8]
 max-line-length = 120
@@ -139,17 +155,17 @@ extend-ignore = "E203" # Whitespace before ':' for black compatability
 py-version = "3.9"
 max-line-length = 120
 disable = [
-    "C0116", # documentation
-    "C0114", # documentation
-    "C0115", # documentation
+  "C0116", # documentation
+  "C0114", # documentation
+  "C0115", # documentation
 ]
 
 [tool.pytest]
 addopts = [
-    "--ignore=data",
-    "--ignore=notebooks",
-    "--ignore=notes",
-    "--ignore=docker",
+  "--ignore=data",
+  "--ignore=notebooks",
+  "--ignore=notes",
+  "--ignore=docker",
 ]
 
 [tool.mypy]
@@ -169,13 +185,12 @@ recursive = true
 in-place = true
 
 [tool.bandit]
-exclude_dirs = ["sneakers_ml/data/test"]
+exclude_dirs = [
+  "sneakers_ml/data/test",
+]
 
 [tool.bandit.assert_used]
-skips = ['*_test.py', '*/test_*.py']
-
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = [
-  "poetry-core",
+skips = [
+  '*_test.py',
+  '*/test_*.py',
 ]
