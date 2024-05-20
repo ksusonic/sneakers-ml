@@ -57,4 +57,4 @@ COPY . /app/
 WORKDIR /app
 
 EXPOSE 8000
-ENTRYPOINT [ "./run-app.sh" ]
+ENTRYPOINT [ "make", "app" ]
