@@ -1,8 +1,16 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
 [tool.poetry]
 name = "sneakers-ml"
 version = "0.1.1"
 description = ""
-authors = ["MIEM"]
+authors = [
+  "MIEM",
+]
 license = "MIT"
 readme = "README.md"
 
@@ -32,6 +40,10 @@ lightning = "^2.2.3"
 wandb = "^0.16.6"
 hydra-core = "^1.3.2"
 loguru = "^0.7.2"
+datasets = "^2.19.1"
+transformers = "^4.41.0"
+accelerate = "^0.30.1"
+evaluate = "^0.4.2"
 
 [tool.poetry.group.data-eda]
 optional = true
@@ -105,31 +117,38 @@ pytest-asyncio = "^0.23.5"
 
 [tool.black]
 line-length = 120
-target-version = ["py39"]
+target-version = [
+  "py39",
+]
 # skip-magic-trailing-comma = true
 
 [tool.ruff]
 target-version = "py39"
 line-length = 120
-extend-include = ["*.ipynb"]
+extend-include = [
+  "*.ipynb",
+]
 
-[tool.ruff.lint]
-select = ["ALL"]
-ignore = [
-    "D",      # documentation
-    "ANN101", # annotationg self in class methods, will be deprecated
-    "RUF012", # mutable class attributes type checking
-    "ANN102", # annotationg cls in class methods, will be deprecated
-    "COM812", # missing-trailing-comma
-    "FA100",  # future-annotations
-    "NPY002", # numpy random stuff
+lint.select = [
+  "ALL",
+]
+lint.ignore = [
+  "ANN101", # annotationg self in class methods, will be deprecated
+  "ANN102", # annotationg cls in class methods, will be deprecated
+  "COM812", # missing-trailing-comma
+  "D",      # documentation
+  "FA100",  # future-annotations
+  "NPY002", # numpy random stuff
+  "RUF012", # mutable class attributes type checking
 ]
 
 [tool.isort]
 profile = "black"
 line_length = 120
 float_to_top = true
-known_third_party = ["wandb"]
+known_third_party = [
+  "wandb",
+]
 
 [tool.flake8]
 max-line-length = 120
@@ -139,17 +158,17 @@ extend-ignore = "E203" # Whitespace before ':' for black compatability
 py-version = "3.9"
 max-line-length = 120
 disable = [
-    "C0116", # documentation
-    "C0114", # documentation
-    "C0115", # documentation
+  "C0116", # documentation
+  "C0114", # documentation
+  "C0115", # documentation
 ]
 
 [tool.pytest]
 addopts = [
-    "--ignore=data",
-    "--ignore=notebooks",
-    "--ignore=notes",
-    "--ignore=docker",
+  "--ignore=data",
+  "--ignore=notebooks",
+  "--ignore=notes",
+  "--ignore=docker",
 ]
 
 [tool.mypy]
@@ -169,13 +188,12 @@ recursive = true
 in-place = true
 
 [tool.bandit]
-exclude_dirs = ["sneakers_ml/data/test"]
+exclude_dirs = [
+  "sneakers_ml/data/test",
+]
 
 [tool.bandit.assert_used]
-skips = ['*_test.py', '*/test_*.py']
-
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = [
-  "poetry-core",
+skips = [
+  '*_test.py',
+  '*/test_*.py',
 ]
