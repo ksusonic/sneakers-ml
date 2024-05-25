@@ -78,12 +78,23 @@ def create_brands_classification_filtered(cfg: DictConfig) -> None:
     split_train_test_val(cfg.data.splits.full, cfg.data.path)
 
 
+def create_brands_classification_with_footshop(cfg: DictConfig) -> None:
+    move_top_sneakers(cfg.paths.merged_with_footshop.metadata.brands_dataset, cfg.data.splits.full, 100)
+    split_train_test_val(cfg.data.splits.full, cfg.data.path)
+
+
 if __name__ == "__main__":
 
     with initialize(version_base=None, config_path="../../config", job_name="create_brands_classification_main"):
-        config = compose(config_name="config", overrides=["data=brands_classification"])
+        config = compose(config_name="cfg_ml", overrides=["data=brands_classification"])
         create_brands_classification(config)
 
     with initialize(version_base=None, config_path="../../config", job_name="create_brands_classification_filtered"):
-        config = compose(config_name="config", overrides=["data=brands_classification_filtered"])
+        config = compose(config_name="cfg_ml", overrides=["data=brands_classification_filtered"])
         create_brands_classification_filtered(config)
+
+    with initialize(
+        version_base=None, config_path="../../config", job_name="create_brands_classification_with_footshop"
+    ):
+        config = compose(config_name="cfg_ml", overrides=["data=brands_classification_with_footshop"])
+        create_brands_classification_with_footshop(config)

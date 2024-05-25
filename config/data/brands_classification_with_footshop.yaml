@@ -1,0 +1,5 @@
+name: brands-classification-with-footshop
+path: ${paths.training.brands_classification.with_footshop}
+
+defaults:
+  - default

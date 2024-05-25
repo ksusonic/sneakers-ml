@@ -97,14 +97,16 @@ class BaseFeatures(ABC):
         return image.crop((left, top, right, bottom))
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="config")
+@hydra.main(version_base=None, config_path="../../config", config_name="cfg_ml")
 def create_all_features(cfg: DictConfig) -> None:
     for feature in cfg.features:
         tqdm.write(f"Creating {feature}")
         instantiate(config=cfg.features[feature], config_data=cfg.data).create_features()
 
 
+# DO NOT FORGET TO SET SIFT ONNX AND RESNET ONNX TO FALSE
 if __name__ == "__main__":
     create_all_features()  # pylint: disable=no-value-for-parameter
 
-# python sneakers_ml/features/base.py -m data=brands_classification,brands_classification_filtered
+# python sneakers_ml/features/base.py -m
+# data=brands_classification,brands_classification_filtered,brands_classification_with_footshop

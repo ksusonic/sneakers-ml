@@ -89,7 +89,7 @@ class SIFTFeatures(BaseFeatures):
         return np.array(features), classes, class_to_idx
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="config")
+@hydra.main(version_base=None, config_path="../../config", config_name="cfg_ml")
 def create_features(cfg: DictConfig) -> None:
     SIFTFeatures(cfg.features.sift.config, cfg.data).create_features()
 

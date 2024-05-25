@@ -1,5 +1,20 @@
+raw_data: data/raw
+
 merged:
   folder: data/merged
+  metadata_folder: ${.folder}/metadata
+  images_folder: ${.folder}/images
+  metadata:
+    full_dataset: ${..metadata_folder}/full_dataset.csv
+    main_dataset: ${..metadata_folder}/main_dataset.csv
+    brands_dataset: ${..metadata_folder}/brands_dataset.csv
+    models_dataset: ${..metadata_folder}/models_dataset.csv
+  images:
+    brands: ${..images_folder}/by-brands
+    models: ${..images_folder}/by-models
+
+merged_with_footshop:
+  folder: data/merged-with-footshop
   metadata_folder: ${.folder}/metadata
   images_folder: ${.folder}/images
   metadata:
@@ -17,6 +32,7 @@ training:
     name: brands-classification
     main: ${..folder}/${.name}
     filtered: ${..folder}/${.name}-filtered
+    with_footshop: ${..folder}/${.name}-with-footshop
 
 features: data/features
 models: data/models

@@ -1,0 +1,10 @@
+defaults:
+  - _self_
+  - paths: default
+
+raw_data_path: ${paths.raw_data}
+save_path: ${paths.merged_with_footshop.folder}
+ignore:
+  - kickscrew
+  - highsnobiety
+project_name: sneakers_ml
