@@ -49,7 +49,7 @@ class HogFeatures(BaseFeatures):
         return numpy_features, classes, class_to_idx
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="config")
+@hydra.main(version_base=None, config_path="../../config", config_name="cfg_ml")
 def create_features(cfg: DictConfig) -> None:
     HogFeatures(cfg.features.hog.config, cfg.data).create_features()
 

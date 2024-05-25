@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from sneakers_ml.features.base import BaseFeatures
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="config")
+@hydra.main(version_base=None, config_path="../../config", config_name="cfg_ml")
 def train(cfg: DictConfig) -> None:
     np.random.seed(42)
     random.seed(42)
@@ -73,4 +73,5 @@ def train(cfg: DictConfig) -> None:
 if __name__ == "__main__":
     train()  # pylint: disable=no-value-for-parameter
 
-# python sneakers_ml/models/train.py -m data=brands_classification,brands_classification_filtered
+# python sneakers_ml/models/train.py -m
+# data=brands_classification,brands_classification_filtered,brands_classification_with_footshop

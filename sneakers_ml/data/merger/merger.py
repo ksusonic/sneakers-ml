@@ -2,6 +2,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 import pandas as pd
+from hydra import compose, initialize
 from loguru import logger
 from tqdm import tqdm
 
@@ -13,7 +14,7 @@ from sneakers_ml.data.storage.storage import StorageProcessor
 
 
 class Merger:
-    def __init__(self, metadata_path: str, ignore: Sequence[str]) -> None:
+    def __init__(self, metadata_path: Path, ignore: Sequence[str]) -> None:
         tqdm.pandas()
 
         self.metadata_path = Path(metadata_path)
@@ -133,7 +134,7 @@ class Merger:
 
     def save_all(self, save_path: str) -> dict[str, pd.DataFrame]:
         path = Path(save_path)
-        path.mkdir(parents=True, exist_ok=True)
+        (path / "metadata").mkdir(parents=True, exist_ok=True)
 
         main_dataframe = self.get_main_dataframe()
         main_dataframe.to_csv(path / "metadata" / "main_dataset.csv", index=False)
@@ -155,4 +156,6 @@ class Merger:
 
 
 if __name__ == "__main__":
-    Merger("data/raw/metadata", ignore=("kickscrew", "highsnobiety", "footshop")).save_all("data/merged")
+    with initialize(version_base=None, config_path="../../../config", job_name="merge_datasets"):
+        config = compose(config_name="cfg_merger")
+        Merger(Path(config.raw_data_path) / "metadata", ignore=config.ignore).save_all(config.save_path + "-test")

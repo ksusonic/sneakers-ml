@@ -70,8 +70,8 @@ class BrandsClassifier:
 
 
 if __name__ == "__main__":
-    with initialize(version_base=None, config_path="../../config", job_name="predict"):
-        cfg = compose(config_name="config")
+    with initialize(version_base=None, config_path="../../config", job_name="ml-predict"):
+        cfg = compose(config_name="cfg_ml")
         image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
         print(BrandsClassifier(cfg).predict([image]))
         print(BrandsClassifier(cfg).predict([image, image, image]))

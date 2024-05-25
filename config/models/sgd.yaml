@@ -21,4 +21,4 @@ sgd:
     cv: 3
     scoring: "f1_macro"
     verbose: 1
-    n_jobs: -1
+    n_jobs: 1

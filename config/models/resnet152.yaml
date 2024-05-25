@@ -1,0 +1,13 @@
+resnet152:
+  name: resnet152-dl
+  save_onnx: true
+  idx_to_classes: ${paths.models_save}/${.name}-classes.npy
+
+  dataloader:
+    batch_size: 128
+    num_workers: 4
+
+  optimizer:
+    lr: 0.001
+
+  num_epochs: 5

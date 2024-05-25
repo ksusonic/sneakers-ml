@@ -1,0 +1,10 @@
+defaults:
+  - _self_
+  - data: brands_classification_with_footshop
+  - models:
+      - resnet152
+      - vit_transformer
+  - paths: default
+
+project_name: sneakers_ml
+log_wandb: True
