@@ -1,5 +1,4 @@
-.dvc/tmp
-.dvc/cache
+.dvc
 .github
 .venv
 data
@@ -7,9 +6,6 @@ data
 !data/models
 deploy
 dist
+docs
 node_modules
 notebooks
-notes
-*/test
-*/tests
-vendor

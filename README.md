@@ -24,8 +24,6 @@ ML часть проекта будет заключатся в обучении
 - [Описание моделей и эмбеддингов](/docs/features-models.md)
 - [Инструкции по запуску](/docs/launch-instructions.md)
 
-## Запуск docker
-
 ## Пример работы телеграм бота
 
 ![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
@@ -81,6 +79,18 @@ ML часть проекта будет заключатся в обучении
   - [ ] faiss
 - [ ] similarity learning
 - [ ] Возможно text2image, image2text
+
+## Установка
+
+Для работы с API-сервисом или ботом установите необходимое окружение. Установите менеджер пакетов poetry:
+```shell
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+DVC: https://dvc.org/doc/install
+Aws-cli S3 Яндекс облака: https://yandex.cloud/ru/docs/storage/tools/aws-cli
+
+Запуск телеграм
 
 ## Список членов команды
 
