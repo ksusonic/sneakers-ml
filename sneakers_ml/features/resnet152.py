@@ -92,7 +92,7 @@ class ResNet152Features(BaseFeatures):
 
 @hydra.main(version_base=None, config_path="../../config", config_name="cfg_ml")
 def create_features(cfg: DictConfig) -> None:
-    ResNet152Features(cfg.features.resnet152.config, cfg.data).create_features()
+    ResNet152Features(cfg.features.resnet152.config_ml, cfg.data).create_features()
 
 
 if __name__ == "__main__":
