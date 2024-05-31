@@ -74,10 +74,9 @@ ML часть проекта будет заключатся в обучении
 - [ ] **Обёртка моделей**
   - [x] FastAPI
   - [x] Telegram bot
-  - [ ] streamlit
 - [ ] image2image
   - [ ] faiss
-- [ ] similarity learning
+- [x] similarity learning
 - [ ] Возможно text2image, image2text
 
 ## Установка

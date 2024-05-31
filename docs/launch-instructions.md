@@ -29,8 +29,8 @@ dvc pull
 
 Для простого поднятия сервисов создана docker-compose конфигурация:
 
-- Local Docker-compose для локальной сборки: [docker-compose.local.yml](/docker-compose.local.yml)
-- Docker-compose для production-развертывания: [docker-compose.yml](/docker-compose.yml)
+- Local Docker-compose для локальной сборки: [docker-compose.local.yml](/docker-compose.yml)
+- Docker-compose для production-развертывания: [docker-compose.yml](/deploy/docker-compose.yml)
 
 Все переменные окружения должны браться из .env файлов (путем создания копии эталона [.env.dist](/.env.dist))
 
