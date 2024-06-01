@@ -11,6 +11,8 @@ services:
     restart: always
     environment:
       - API_HOST=http://api:8000
+    env_file:
+      - .env
   api:
     container_name: sneakers-ml-api
     build:
@@ -24,8 +26,10 @@ services:
     environment:
       - PORT=8000
       - REDIS_HOST=redis
+    env_file:
+      - .env
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/ping" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
   redis:
     container_name: sneakers-ml-redis
     image: redis:alpine

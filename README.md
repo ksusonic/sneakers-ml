@@ -79,19 +79,36 @@ ML часть проекта будет заключатся в обучении
 - [x] similarity learning
 - [ ] Возможно text2image, image2text
 
-## Установка
+## Начало работы
 
-Для работы с API-сервисом или ботом установите необходимое окружение. Установите менеджер пакетов poetry:
-```shell
-curl -sSL https://install.python-poetry.org | python3 -
+Установите необходимое окружение:
+
+- Poetry: <https://python-poetry.org/docs/#installation>
+- Pre-commit: <https://pre-commit.com/#install>
+- DVC: <https://dvc.org/doc/install>
+- AWS CLI: <https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html>
+- Docker [Compose]: <https://docs.docker.com/get-docker/>
+
+> **_Важно:_** Перед началом работы получите нужные секреты скопировав `.env.example` в `.env` и заполнив его.
+>
+> ```shell
+> $ cp .env.example .env
+> ```
+
+### **Docker Compose**
+
+Одна команда поднимает весь сервис, включая API и бота:
+
+```bash
+docker-compose up
 ```
 
-DVC: https://dvc.org/doc/install
-Aws-cli S3 Яндекс облака: https://yandex.cloud/ru/docs/storage/tools/aws-cli
+Сервис будет доступен по адресу `http://localhost:8000`.
+Бот будет запущен в телеграме с указанным токеном.
 
-Запуск телеграм
+> Подробные альтернативные варианты запуска можно найти в [инструкции по запуску](/docs/launch-instructions.md).
 
 ## Список членов команды
 
-- Литвинов Вячеслав
-- Моисеев Даниил
+- Литвинов Вячеслав [@searayeah](https://github.com/searayeah)
+- Моисеев Даниил ‎ ‎ ‎ ‎ ‎ [@ksusonic](https://github.com/ksusonic)

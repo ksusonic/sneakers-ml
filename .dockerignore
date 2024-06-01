@@ -1,11 +1,13 @@
 .dvc
 .github
+.idea
+.pytest_cache
 .venv
 data
-!data/features
-!data/models
+!**/*.dvc
 deploy
 dist
 docs
 node_modules
 notebooks
+tests
