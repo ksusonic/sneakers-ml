@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - trunk
-    tags: ["v*.*.*"]
+    paths:
+      - sneakers_ml/app/**
+      - sneakers_ml/models/**
+      - config/**
 
 jobs:
   push_to_registries:

@@ -1,19 +1,16 @@
-version: "3.8"
+version: "3.7"
 name: "sneakers-ml"
 services:
   bot:
     container_name: sneakers-ml-bot
-    build:
-      context: .
-      dockerfile: deploy/bot/Dockerfile
+    image: cr.yandex/crp9sd2f3p1o3mfu9664/sneakers-ml-bot
     restart: always
     environment:
+      - CONTAINER_LOGGING=True
       - API_HOST=http://api:8000
   api:
     container_name: sneakers-ml-api
-    build:
-      context: .
-      dockerfile: deploy/app/Dockerfile
+    image: cr.yandex/crp9sd2f3p1o3mfu9664/sneakers-ml-api
     restart: always
     depends_on:
       - redis

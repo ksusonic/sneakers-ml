@@ -24,8 +24,6 @@ ML часть проекта будет заключатся в обучении
 - [Описание моделей и эмбеддингов](/docs/features-models.md)
 - [Инструкции по запуску](/docs/launch-instructions.md)
 
-## Запуск docker
-
 ## Пример работы телеграм бота
 
 ![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
@@ -76,13 +74,41 @@ ML часть проекта будет заключатся в обучении
 - [ ] **Обёртка моделей**
   - [x] FastAPI
   - [x] Telegram bot
-  - [ ] streamlit
 - [ ] image2image
   - [ ] faiss
-- [ ] similarity learning
+- [x] similarity learning
 - [ ] Возможно text2image, image2text
+
+## Начало работы
+
+Установите необходимое окружение:
+
+- Poetry: <https://python-poetry.org/docs/#installation>
+- Pre-commit: <https://pre-commit.com/#install>
+- DVC: <https://dvc.org/doc/install>
+- AWS CLI: <https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html>
+- Docker [Compose]: <https://docs.docker.com/get-docker/>
+
+> **_Важно:_** Перед началом работы получите нужные секреты скопировав `.env.example` в `.env` и заполнив его.
+>
+> ```shell
+> $ cp .env.example .env
+> ```
+
+### **Docker Compose**
+
+Одна команда поднимает весь сервис, включая API и бота:
+
+```bash
+docker-compose up
+```
+
+Сервис будет доступен по адресу `http://localhost:8000`.
+Бот будет запущен в телеграме с указанным токеном.
+
+> Подробные альтернативные варианты запуска можно найти в [инструкции по запуску](/docs/launch-instructions.md).
 
 ## Список членов команды
 
-- Литвинов Вячеслав
-- Моисеев Даниил
+- Литвинов Вячеслав [@searayeah](https://github.com/searayeah)
+- Моисеев Даниил ‎ ‎ ‎ ‎ ‎ [@ksusonic](https://github.com/ksusonic)

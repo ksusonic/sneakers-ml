@@ -4,7 +4,9 @@
 
 .github/
 .venv/
+config/
+deploy/
+docs/
 notebooks/
-notes/
 sneakers_ml/
-.DS_Store
+tests/

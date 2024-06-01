@@ -13,9 +13,7 @@ from sneakers_ml.models.onnx_utils import get_session, predict
 
 
 class Resnet152Classifier:
-    def __init__(self, config: DictConfig) -> None:
-        self.config = config
-
+    def __init__(self, cfg: DictConfig) -> None:
         with Path(cfg.models.resnet152.idx_to_classes).open("rb") as file:
             class_to_idx_numpy = np.load(file, allow_pickle=False)
             self.class_to_idx = dict(zip(class_to_idx_numpy[:, 1].astype(int), class_to_idx_numpy[:, 0]))

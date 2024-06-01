@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - data: brands_classification_with_footshop
+  - data: brands_classification
   - features:
       - hog
       - sift

@@ -13,6 +13,7 @@ from PIL import Image
 
 from sneakers_ml.features.base import BaseFeatures
 from sneakers_ml.models.onnx_utils import get_session, predict
+from sneakers_ml.models.resnet152_classification_predict import Resnet152Classifier
 
 
 class Feature(TypedDict):
@@ -22,15 +23,15 @@ class Feature(TypedDict):
 
 
 class BrandsClassifier:
-    def __init__(self, config: DictConfig) -> None:
-        self.config = config
+    def __init__(self, config_ml: DictConfig, config_dl: DictConfig) -> None:
+        self.config_ml = config_ml
         self.instances: dict[str, Feature] = {}
         start_time = time.time()
-        logger.info("Loading models: " + ", ".join(self.config.models.keys()))
+        logger.info("Loading ML models: " + ", ".join(self.config_ml.models.keys()))
 
-        for feature in self.config.features:
+        for feature in self.config_ml.features:
             feature_instance: BaseFeatures = instantiate(
-                config=self.config.features[feature], config_data=self.config.data
+                config=self.config_ml.features[feature], config_data=self.config_ml.data
             )
             class_to_idx = feature_instance.get_class_to_idx()
             self.instances[feature] = {
@@ -39,9 +40,13 @@ class BrandsClassifier:
                 "model_instances": {},
             }
 
-            for model in self.config.models:
-                model_path = Path(self.config.paths.models_save) / f"{feature}-{model}.onnx"
+            for model in self.config_ml.models:
+                model_path = Path(self.config_ml.paths.models_save) / f"{feature}-{model}.onnx"
                 self.instances[feature]["model_instances"][model] = get_session(str(model_path))
+
+        self.dl_models = [Resnet152Classifier(config_dl)]
+        logger.info("Loaded resnet152 model")
+
         end_time = time.time()
         logger.info(f"All models loaded in {end_time - start_time:.1f} seconds")
 
@@ -66,6 +71,12 @@ class BrandsClassifier:
             result, string_result = self._predict_feature(feature_name, images)
             predictions |= result
             string_predictions |= string_result
+
+        for model in self.dl_models:
+            pred, string_pred = model.predict(images)
+            predictions["resnet152"] = pred
+            string_predictions["resnet152"] = string_pred
+
         return predictions, string_predictions
 
 
