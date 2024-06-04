@@ -1,0 +1,9 @@
+schema: '2.0'
+stages:
+  build_models:
+    cmd: tar czf build/brand-cls-models.tar.gz data/models/brands-classification/
+    outs:
+    - path: build/brand-cls-models.tar.gz
+      hash: md5
+      md5: 2af2d30b97dda734b4082da02739c747
+      size: 489320738
