@@ -2,8 +2,28 @@ schema: '2.0'
 stages:
   build_models:
     cmd: tar czf build/brand-cls-models.tar.gz data/models/brands-classification/
+      data/features/brands-classification/
+    deps:
+    - path: data/features/brands-classification/
+      hash: md5
+      md5: 6d2ad3f4268710226cddb0ef7a05489c.dir
+      size: 652366768
+      nfiles: 12
+    - path: data/models/brands-classification/
+      hash: md5
+      md5: 2127fee74d33169203a9a886ec307f11.dir
+      size: 751872296
+      nfiles: 23
     outs:
     - path: build/brand-cls-models.tar.gz
       hash: md5
-      md5: 2af2d30b97dda734b4082da02739c747
-      size: 489320738
+      md5: e88a38e6940ef15e2e077ac6ba42e5df
+      size: 457804580
+  upload_brand_classification_models:
+    cmd: aws s3 cp build/brand-cls-models.tar.gz s3://sneaker-ml-models/brand-cls-models.tar.gz
+      --endpoint-url https://storage.yandexcloud.net
+    deps:
+    - path: build/brand-cls-models.tar.gz
+      hash: md5
+      md5: 4f4966aaa4ba1cffd7288ae97e138acc
+      size: 174796800
