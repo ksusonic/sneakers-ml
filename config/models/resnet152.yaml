@@ -1,8 +1,7 @@
 resnet152:
   name: resnet152-dl
-  save_onnx: true
   idx_to_classes: ${paths.models_save}/${.name}-classes.npy
-
+  onnx_path: ${paths.models_save}/${.name}.onnx
   dataloader:
     batch_size: 128
     num_workers: 4
@@ -10,4 +9,5 @@ resnet152:
   optimizer:
     lr: 0.001
 
-  num_epochs: 5
+  num_epochs: 1
+  device: cuda

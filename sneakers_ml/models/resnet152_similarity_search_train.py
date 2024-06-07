@@ -40,7 +40,7 @@ class ResNet152SimilaritySearchCreator:
         model.eval()
         return model  # type: ignore[no-any-return]
 
-    def _create_onnx_model(self, save_path) -> None:
+    def _create_onnx_model(self, save_path: str) -> None:
         model = self._initialize_torch_resnet()
         torch_input = torch.randn(1, 3, 224, 224)
         save_torch_model(model, torch_input, save_path)
@@ -65,9 +65,7 @@ class ResNet152SimilaritySearchCreator:
         return numpy_features, classes, dataset.class_to_idx
 
     @staticmethod
-    def _save_features(
-        path: str, numpy_features: np.ndarray, classes: np.ndarray, class_to_idx: dict[str, int]
-    ) -> None:
+    def save_features(path: str, numpy_features: np.ndarray, classes: np.ndarray, class_to_idx: dict[str, int]) -> None:
         save_path = Path(path)
         save_path.parent.mkdir(parents=True, exist_ok=True)
         with save_path.open("wb") as save_file:
@@ -76,7 +74,7 @@ class ResNet152SimilaritySearchCreator:
             np.save(save_file, np.array(list(class_to_idx.items())), allow_pickle=False)
 
     @staticmethod
-    def _load_features(path: str) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
+    def load_features(path: str) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
         with Path(path).open("rb") as file:
             numpy_features = np.load(file, allow_pickle=False)
             classes = np.load(file, allow_pickle=False)
@@ -89,5 +87,5 @@ if __name__ == "__main__":
     with initialize(version_base=None, config_path="../../config", job_name="similarity-search-features-create"):
         cfg = compose(config_name="cfg_similarity_search")
         creator = ResNet152SimilaritySearchCreator(cfg.device, cfg.model_path)
-        numpy_features, classes, class_to_idx = creator.get_features_folder(cfg.images_path)
-        creator._save_features(cfg.embeddings_path, numpy_features, classes, class_to_idx)
+        numpy_features_, classes_, class_to_idx_ = creator.get_features_folder(cfg.images_path)
+        creator.save_features(cfg.embeddings_path, numpy_features_, classes_, class_to_idx_)
