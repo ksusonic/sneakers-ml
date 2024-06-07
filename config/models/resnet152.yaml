@@ -9,5 +9,5 @@ resnet152:
   optimizer:
     lr: 0.001
 
-  num_epochs: 1
+  num_epochs: 5
   device: cuda
