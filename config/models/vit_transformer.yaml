@@ -1,0 +1,12 @@
+vit_transformer:
+  hf_name: google/vit-base-patch16-224-in21k
+  name: vit-transformer
+  onnx_path: ${paths.models_save}/${.name}.onnx
+  idx_to_classes: ${paths.models_save}/${.name}-classes.npy
+  dataloader:
+    batch_size: 32
+    num_workers: 6
+    pin_memory: false
+  optimizer:
+    lr: 0.0002
+  num_epochs: 5

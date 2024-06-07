@@ -1,5 +1,3 @@
-from collections.abc import Sequence
-
 import numpy as np
 import pandas as pd
 import torch
@@ -8,15 +6,14 @@ from PIL import Image
 from sklearn.metrics.pairwise import cosine_similarity
 from torchvision.models import ResNet152_Weights
 
-from sneakers_ml.models.onnx_utils import get_device, get_session, predict
+from sneakers_ml.models.onnx_utils import get_session
 from sneakers_ml.models.resnet152_similarity_search_train import ResNet152SimilaritySearchCreator
 
 
 class ResNet152SimilaritySearch:
-    def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str, device: str) -> None:
+    def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str) -> None:
         self.embeddings_path = embeddings_path
         self.onnx_path = onnx_path
-        self.device = get_device(device)
         self.metadata_path = metadata_path
         self.numpy_features, self.classes, self.class_to_idx = ResNet152SimilaritySearchCreator._load_features(
             self.embeddings_path
@@ -27,7 +24,7 @@ class ResNet152SimilaritySearch:
         self.weights = ResNet152_Weights.DEFAULT
         self.preprocess = self.weights.transforms()
 
-        self.onnx_session = get_session(self.onnx_path, self.device)
+        self.onnx_session = get_session(self.onnx_path)
 
         self.df = pd.read_csv(self.metadata_path)
         self.df = self.df.drop(
@@ -48,10 +45,6 @@ class ResNet152SimilaritySearch:
     def _get_feature(self, image: Image.Image) -> np.ndarray:
         return self.get_features([image])
 
-    def get_features(self, images: Sequence[Image.Image]) -> np.ndarray:
-        preprocessed_images = torch.stack([self.apply_transforms(image) for image in images])
-        return predict(self.onnx_session, preprocessed_images)
-
     def get_similar(self, image: Image.Image, threshold_low: float, threshold_high: float):
         image_feature = self._get_feature(image)
         similarity_matrix = cosine_similarity(self.numpy_features, image_feature).flatten()
@@ -60,7 +53,7 @@ class ResNet152SimilaritySearch:
         ).flatten()
 
         similar_objects = self.classes[similar_indices]
-        # similar_images = similar_objects[:, 0]
+        similar_images = similar_objects[:, 0]
         similar_models = np.vectorize(self.idx_to_class.get)(similar_objects[:, 1])
 
         similar_metadata_dump = (
@@ -78,14 +71,12 @@ class ResNet152SimilaritySearch:
             .reset_index()
             .to_numpy()
         )
-        return similar_metadata_dump
+        return similar_metadata_dump, similar_images
 
 
 if __name__ == "__main__":
     with initialize(version_base=None, config_path="../../config", job_name="similarity-search-features-predict"):
         cfg = compose(config_name="cfg_similarity_search")
-
-        temp = ResNet152SimilaritySearch(cfg.embeddings_path, cfg.model_path, cfg.metadata_path, cfg.device)
-
-        image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
-        print(temp.get_similar(image, 0.85, 0.9))
+        temp = ResNet152SimilaritySearch(cfg.embeddings_path, cfg.model_path, cfg.metadata_path)
+        test_image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
+        print(temp.get_similar(test_image, 0.85, 0.9))

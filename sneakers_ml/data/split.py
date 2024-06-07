@@ -27,7 +27,7 @@ def create_dataframe(
 
 
 def filter_images(cfg: DictConfig) -> list[str]:
-    features_class = ResNet152Features(cfg.features.resnet152.config_ml, cfg.data)
+    features_class = ResNet152Features(cfg.features.resnet152.config, cfg.data)
     features, classes, class_to_idx = features_class.get_features_folder(cfg.data.splits.full)
     idx_to_class = {v: k for k, v in class_to_idx.items()}
     classes_idx = classes[:, 1]

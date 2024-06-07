@@ -91,7 +91,7 @@ class SIFTFeatures(BaseFeatures):
 
 @hydra.main(version_base=None, config_path="../../config", config_name="cfg_ml")
 def create_features(cfg: DictConfig) -> None:
-    SIFTFeatures(cfg.features.sift.config_ml, cfg.data).create_features()
+    SIFTFeatures(cfg.features.sift.config, cfg.data).create_features()
 
 
 if __name__ == "__main__":
