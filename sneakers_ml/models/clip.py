@@ -18,7 +18,8 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
     def __init__(
         self, image_folder: str, clip_model_name: str, onnx_path: str, embeddings_path: str, device: str
     ) -> None:
-        super().__init__(image_folder=image_folder, embeddings_path=embeddings_path, onnx_path=onnx_path, device=device)
+        super().__init__(image_folder=image_folder,
+                         embeddings_path=embeddings_path, onnx_path=onnx_path, device=device)
 
         self.clip_model_name = clip_model_name
         self.processor = None
@@ -26,7 +27,8 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
 
     def init_data(self) -> None:
         """ """
-        self.dataset = ImageFolder(self.image_folder, transform=lambda x: self.processor(images=x, return_tensors="pt"))
+        self.dataset = ImageFolder(self.image_folder, transform=lambda x: self.processor(
+            images=x, return_tensors="pt"))
         self.dataloader = DataLoader(
             self.dataset, batch_size=128, shuffle=False, drop_last=False, num_workers=6, pin_memory=False
         )
@@ -34,12 +36,14 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
     def init_model(self) -> None:
         """ """
         self.processor = CLIPProcessor.from_pretrained(self.clip_model_name)
-        self.clip_model = CLIPModel.from_pretrained(self.clip_model_name).to(self.device)
+        self.clip_model = CLIPModel.from_pretrained(
+            self.clip_model_name).to(self.device)
         self.clip_model.eval()
 
     def create_onnx_model(self) -> None:
         """ """
-        model = CLIPTextModelWithProjection.from_pretrained(self.clip_model_name)
+        model = CLIPTextModelWithProjection.from_pretrained(
+            self.clip_model_name)
         model.eval()
 
         text = ["a dummy sentence"]
@@ -326,7 +330,8 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
         :param str]:  (Default value = None)
 
         """
-        inputs = self.processor(text=text_query, return_tensors="np", padding=True)
+        inputs = self.processor(
+            text=text_query, return_tensors="np", padding=True)
         return predict_clip(self.onnx_session, inputs)
 
     def predict(self, top_k: int, text_query: str = None) -> tuple[np.ndarray, np.ndarray]:
