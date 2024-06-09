@@ -1,6 +1,6 @@
 resnet152:
   name: resnet152-dl
-  idx_to_classes: ${paths.models_save}/${.name}-classes.npy
+  class_to_idx: ${paths.models_save}/${.name}-classes.npy
   onnx_path: ${paths.models_save}/${.name}.onnx
   dataloader:
     batch_size: 128

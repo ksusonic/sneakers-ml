@@ -1,0 +1,6 @@
+model_path: data/models/similarity_search/clip-text2image-search.onnx
+images_path: data/merged-with-footshop/images/by-models
+embeddings_path: data/models/similarity_search/clip-by-models-features.npy
+metadata_path: data/merged-with-footshop/metadata/full_dataset.csv
+device: cuda
+base_model: openai/clip-vit-base-patch32

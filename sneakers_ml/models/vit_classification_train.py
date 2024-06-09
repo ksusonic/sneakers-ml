@@ -127,6 +127,7 @@ class ViTClassificationTrainer:
         logger.info(str(true_metrics))
 
         loaded_model = ViTForImageClassification.from_pretrained(self.temp_model_path)
+        loaded_model.eval()
         torch_input = (torch.randn(1, 3, 224, 224),)
         save_torch_model(loaded_model, torch_input, self.cfg.models.vit_transformer.onnx_path)
 

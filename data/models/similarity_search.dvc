@@ -1,6 +1,6 @@
 outs:
-- md5: 23e55b331302ba9f6d6312f9c5ed3cd6.dir
-  size: 507959343
-  nfiles: 2
+- md5: 94a57395fe392e8abf9a2f34594aa43a.dir
+  size: 853218061
+  nfiles: 4
   hash: md5
   path: similarity_search
