@@ -1,15 +1,21 @@
 from collections.abc import Sequence
-from typing import Any, Union
+from typing import Any
+from typing import Union
 
 import numpy as np
 import torch
-from hydra import compose, initialize
+from hydra import compose
+from hydra import initialize
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
-from transformers import CLIPModel, CLIPProcessor, CLIPTextModelWithProjection
+from transformers import CLIPModel
+from transformers import CLIPProcessor
+from transformers import CLIPTextModelWithProjection
 
-from sneakers_ml.models.onnx_utils import predict_clip, save_clip_model
-from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor, SimilaritySearchTrainer
+from sneakers_ml.models.onnx_utils import predict_clip
+from sneakers_ml.models.onnx_utils import save_clip_model
+from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor
+from sneakers_ml.models.similarity_search_base import SimilaritySearchTrainer
 
 
 class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
