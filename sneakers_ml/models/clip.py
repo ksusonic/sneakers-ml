@@ -1,32 +1,24 @@
 from collections.abc import Sequence
-from typing import Any
-from typing import Union
+from typing import Any, Union
 
 import numpy as np
 import torch
-from hydra import compose
-from hydra import initialize
+from hydra import compose, initialize
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
-from transformers import CLIPModel
-from transformers import CLIPProcessor
-from transformers import CLIPTextModelWithProjection
+from transformers import CLIPModel, CLIPProcessor, CLIPTextModelWithProjection
 
-from sneakers_ml.models.onnx_utils import predict_clip
-from sneakers_ml.models.onnx_utils import save_clip_model
-from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor
-from sneakers_ml.models.similarity_search_base import SimilaritySearchTrainer
+from sneakers_ml.models.onnx_utils import predict_clip, save_clip_model
+from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor, SimilaritySearchTrainer
 
 
 class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
     """ """
 
-    def __init__(self, image_folder: str, clip_model_name: str, onnx_path: str,
-                 embeddings_path: str, device: str) -> None:
-        super().__init__(image_folder=image_folder,
-                         embeddings_path=embeddings_path,
-                         onnx_path=onnx_path,
-                         device=device)
+    def __init__(
+        self, image_folder: str, clip_model_name: str, onnx_path: str, embeddings_path: str, device: str
+    ) -> None:
+        super().__init__(image_folder=image_folder, embeddings_path=embeddings_path, onnx_path=onnx_path, device=device)
 
         self.clip_model_name = clip_model_name
         self.processor = None
@@ -34,27 +26,20 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
 
     def init_data(self) -> None:
         """ """
-        self.dataset = ImageFolder(
-            self.image_folder,
-            transform=lambda x: self.processor(images=x, return_tensors="pt"))
-        self.dataloader = DataLoader(self.dataset,
-                                     batch_size=128,
-                                     shuffle=False,
-                                     drop_last=False,
-                                     num_workers=6,
-                                     pin_memory=False)
+        self.dataset = ImageFolder(self.image_folder, transform=lambda x: self.processor(images=x, return_tensors="pt"))
+        self.dataloader = DataLoader(
+            self.dataset, batch_size=128, shuffle=False, drop_last=False, num_workers=6, pin_memory=False
+        )
 
     def init_model(self) -> None:
         """ """
         self.processor = CLIPProcessor.from_pretrained(self.clip_model_name)
-        self.clip_model = CLIPModel.from_pretrained(self.clip_model_name).to(
-            self.device)
+        self.clip_model = CLIPModel.from_pretrained(self.clip_model_name).to(self.device)
         self.clip_model.eval()
 
     def create_onnx_model(self) -> None:
         """ """
-        model = CLIPTextModelWithProjection.from_pretrained(
-            self.clip_model_name)
+        model = CLIPTextModelWithProjection.from_pretrained(self.clip_model_name)
         model.eval()
 
         text = ["a dummy sentence"]
@@ -84,14 +69,11 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
 class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
     """ """
 
-    def __init__(self, embeddings_path: str, onnx_path: str,
-                 metadata_path: str, clip_model_name: str) -> None:
+    def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str, clip_model_name: str) -> None:
         super().__init__(embeddings_path, onnx_path, metadata_path)
         self.processor = CLIPProcessor.from_pretrained(clip_model_name)
 
-    def get_features(self,
-                     text_query: Union[Sequence[str],
-                                       str] = None) -> np.ndarray:
+    def get_features(self, text_query: Union[Sequence[str], str] = None) -> np.ndarray:
         """
 
         :param text_query: Union[Sequence[str]:
@@ -116,14 +98,10 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
         :param str]:  (Default value = None)
 
         """
-        inputs = self.processor(text=text_query,
-                                return_tensors="np",
-                                padding=True)
+        inputs = self.processor(text=text_query, return_tensors="np", padding=True)
         return predict_clip(self.onnx_session, inputs)
 
-    def predict(self,
-                top_k: int,
-                text_query: str = None) -> tuple[np.ndarray, np.ndarray]:
+    def predict(self, top_k: int, text_query: str = None) -> tuple[np.ndarray, np.ndarray]:
         """
 
         :param top_k: int:
@@ -153,22 +131,17 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
 
 if __name__ == "__main__":
     # train
-    with initialize(version_base=None,
-                    config_path="../../config",
-                    job_name="text2image-features-create"):
+    with initialize(version_base=None, config_path="../../config", job_name="text2image-features-create"):
         cfg = compose(config_name="cfg_text_to_image")
-        trainer = CLIPSimilaritySearchTrainer(cfg.images_path, cfg.base_model,
-                                              cfg.model_path,
-                                              cfg.embeddings_path, cfg.device)
+        trainer = CLIPSimilaritySearchTrainer(
+            cfg.images_path, cfg.base_model, cfg.model_path, cfg.embeddings_path, cfg.device
+        )
         trainer.train()
 
     # predict
-    with initialize(version_base=None,
-                    config_path="../../config",
-                    job_name="text2image-features-predict"):
+    with initialize(version_base=None, config_path="../../config", job_name="text2image-features-predict"):
         cfg = compose(config_name="cfg_text_to_image")
-        predictor = CLIPTextToImageSimilaritySearch(cfg.embeddings_path,
-                                                    cfg.model_path,
-                                                    cfg.metadata_path,
-                                                    cfg.base_model)
+        predictor = CLIPTextToImageSimilaritySearch(
+            cfg.embeddings_path, cfg.model_path, cfg.metadata_path, cfg.base_model
+        )
         print(predictor.predict(3, "blue sneakers"))
