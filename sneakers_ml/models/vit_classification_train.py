@@ -7,10 +7,14 @@ import numpy as np
 import torch
 import transformers
 from datasets import load_dataset
-from hydra import compose, initialize
+from hydra import compose
+from hydra import initialize
 from loguru import logger
 from omegaconf import DictConfig
-from transformers import Trainer, TrainingArguments, ViTForImageClassification, ViTImageProcessor
+from transformers import Trainer
+from transformers import TrainingArguments
+from transformers import ViTForImageClassification
+from transformers import ViTImageProcessor
 
 from sneakers_ml.models.onnx_utils import save_torch_model
 
