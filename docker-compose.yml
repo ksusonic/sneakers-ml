@@ -1,7 +1,6 @@
 version: "3.8"
 name: "sneakers-ml"
 
-# Образ для локальной разработки
 services:
   bot:
     container_name: sneakers-ml-bot

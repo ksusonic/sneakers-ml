@@ -31,4 +31,5 @@ test:
 	pytest sneakers_ml tests
 
 compress-models:
+	mkdir -p build
 	tar -czf build/brand-cls-models.tar.gz -C ./data/models/brands-classification/ . -C ./data/features/brands-classification/ .

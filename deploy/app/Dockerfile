@@ -1,14 +1,12 @@
-FROM debian:bullseye as base
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.9 \
-    # OpenCV dependencies
-    make ca-certificates wget ffmpeg libsm6 libxext6
-
-
-FROM python:3.9-buster as builder
+FROM python:3.9-bullseye AS base
 
 LABEL authors="Slava and Daniil, miem-refugees"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # OpenCV dependencies
+    make ffmpeg libsm6 libxext6
+
+FROM python:3.9-slim AS builder
 
 RUN pip install poetry
 
@@ -26,15 +24,21 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR  \
 
 FROM base as runtime
 
+WORKDIR /app
+
 ENV VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH=/app
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY config ./config
-COPY sneakers_ml ./sneakers_ml
-COPY Makefile ./Makefile
+COPY config /app/config
+COPY sneakers_ml /app/sneakers_ml
+
+# Models binaries
+ADD https://storage.yandexcloud.net/sneaker-ml-models/brand-cls-models.tar.gz ./
+# or use local add
+#ADD ./build/brand-cls-models.tar.gz ./
 
 EXPOSE 8000
-CMD [ "make", "load-models" ]
-ENTRYPOINT [ "uvicorn", "sneakers_ml.app.main:app", "--proxy-headers", "--host 0.0.0.0", "--port", "8000"
+ENTRYPOINT [ "uvicorn", "sneakers_ml.app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]

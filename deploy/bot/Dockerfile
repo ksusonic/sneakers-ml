@@ -19,10 +19,12 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR  \
 FROM python:3.9-slim-buster as runtime
 
 ENV VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH=/app
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY sneakers_ml ./sneakers_ml/sneakers_ml
+WORKDIR /app
+COPY sneakers_ml /app/sneakers_ml
 
 ENTRYPOINT [ "python", "sneakers_ml/bot/main.py" ]
