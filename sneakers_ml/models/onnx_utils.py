@@ -4,7 +4,8 @@ from typing import Union
 import numpy as np
 import onnxruntime as rt
 import torch
-from catboost import CatBoostClassifier, CatBoostRegressor
+from catboost import CatBoostClassifier
+from catboost import CatBoostRegressor
 from skl2onnx import to_onnx
 from sklearn.base import BaseEstimator
 
