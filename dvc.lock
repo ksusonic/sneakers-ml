@@ -26,5 +26,5 @@ stages:
     deps:
     - path: build/brand-cls-models.tar.gz
       hash: md5
-      md5: 4f4966aaa4ba1cffd7288ae97e138acc
-      size: 174796800
+      md5: 7462af09df68e956dd77722e4cb3e6c8
+      size: 1422942513
