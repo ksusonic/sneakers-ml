@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from loguru import logger
 
@@ -8,7 +10,7 @@ app = FastAPI(
     title="Sneakers ML backend",
     description="This backend predicts brand of sneakers by image.",
     version=__version__,
-    debug=True,
+    debug=os.getenv("DEBUG", False),
 )
 
 # Add Routers
