@@ -16,6 +16,7 @@ from sneakers_ml.models.onnx_utils import save_torch_model
 
 
 class ViTClassificationTrainer:
+    """ """
     def __init__(self, cfg: DictConfig) -> None:
         self.cfg = cfg
         self.temp_model_path = "./vit"
@@ -26,6 +27,7 @@ class ViTClassificationTrainer:
         self.set_training_args()
 
     def load_dataset(self) -> None:
+        """ """
         self.processor = ViTImageProcessor.from_pretrained(self.cfg.models.vit_transformer.hf_name)
         self.dataset = load_dataset("imagefolder", data_dir=self.cfg.data.path)
         self.processed_train = self.dataset["train"].with_transform(self.transform)
@@ -33,6 +35,7 @@ class ViTClassificationTrainer:
         self.processed_test = self.dataset["test"].with_transform(self.transform)
 
     def set_training_args(self) -> None:
+        """ """
         torch.set_float32_matmul_precision("medium")
 
         self.metric_f1 = evaluate.load("f1")
@@ -60,6 +63,7 @@ class ViTClassificationTrainer:
         )
 
     def load_model(self) -> None:
+        """ """
         labels = self.dataset["train"].features["label"].names
         self.id2label = {str(i): c for i, c in enumerate(labels)}
         self.label2id = {c: str(i) for i, c in enumerate(labels)}
@@ -74,23 +78,41 @@ class ViTClassificationTrainer:
             np.save(save_file, np.array(list(self.label2id.items())), allow_pickle=False)
 
     def save_class_to_idx(self) -> None:
+        """ """
         save_path = Path(self.cfg.models.vit_transformer.idx_to_classes)
         save_path.parent.mkdir(parents=True, exist_ok=True)
         with Path(self.cfg.models.vit_transformer.idx_to_classes).open("wb") as save_file:
             np.save(save_file, np.array(list(self.label2id.items())), allow_pickle=False)
 
     def transform(self, example_batch: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
+        """
+
+        :param example_batch: dict[str: 
+        :param torch.Tensor]: 
+
+        """
         inputs = self.processor(list(example_batch["image"]), return_tensors="pt")
         inputs["labels"] = example_batch["label"]
         return inputs  # type: ignore[no-any-return]
 
     def collate_fn(self, batch: Sequence[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
+        """
+
+        :param batch: Sequence[dict[str: 
+        :param torch.Tensor]]: 
+
+        """
         return {
             "pixel_values": torch.stack([x["pixel_values"] for x in batch]),
             "labels": torch.tensor([x["labels"] for x in batch]),
         }
 
     def compute_metrics(self, p: transformers.trainer_utils.EvalPrediction) -> dict[str, float]:
+        """
+
+        :param p: transformers.trainer_utils.EvalPrediction: 
+
+        """
         predictions = np.argmax(p.predictions, axis=1)
         references = p.label_ids
 
@@ -102,6 +124,7 @@ class ViTClassificationTrainer:
         return {"f1_macro": f1_macro, "f1_micro": f1_micro, "f1_weighted": f1_weighted, "accuracy": accuracy}
 
     def train(self) -> None:
+        """ """
         trainer = Trainer(
             model=self.model,
             args=self.training_args,
