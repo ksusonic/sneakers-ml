@@ -3,15 +3,19 @@ from typing import Any
 
 import numpy as np
 import torch
-from hydra import compose, initialize
+from hydra import compose
+from hydra import initialize
 from PIL import Image
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
-from torchvision.models import ResNet152_Weights, resnet152
+from torchvision.models import resnet152
+from torchvision.models import ResNet152_Weights
 
-from sneakers_ml.models.onnx_utils import predict, save_torch_model
-from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor, SimilaritySearchTrainer
+from sneakers_ml.models.onnx_utils import predict
+from sneakers_ml.models.onnx_utils import save_torch_model
+from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor
+from sneakers_ml.models.similarity_search_base import SimilaritySearchTrainer
 
 
 class Identity(nn.Module):
