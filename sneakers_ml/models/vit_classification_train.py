@@ -91,6 +91,8 @@ class ViTClassificationTrainer:
         :param example_batch: dict[str:
         :param torch: Tensor]:
         :param example_batch: dict[str:
+        :param torch: Tensor]:
+        :param example_batch: dict[str:
         :param torch.Tensor]:
 
         """
@@ -101,6 +103,8 @@ class ViTClassificationTrainer:
     def collate_fn(self, batch: Sequence[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
         """
 
+        :param batch: Sequence[dict[str:
+        :param torch: Tensor]]:
         :param batch: Sequence[dict[str:
         :param torch: Tensor]]:
         :param batch: Sequence[dict[str:
@@ -115,6 +119,7 @@ class ViTClassificationTrainer:
     def compute_metrics(self, p: transformers.trainer_utils.EvalPrediction) -> dict[str, float]:
         """
 
+        :param p: transformers.trainer_utils.EvalPrediction:
         :param p: transformers.trainer_utils.EvalPrediction:
         :param p: transformers.trainer_utils.EvalPrediction:
 
