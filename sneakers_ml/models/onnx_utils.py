@@ -38,6 +38,25 @@ def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor, m
     )
 
 
+def save_clip_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Tensor], model_path: str) -> None:
+    save_path = Path(model_path)
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    torch.onnx.export(
+        model,
+        torch_input_tensors,
+        model_path,
+        input_names=["input_ids", "attention_mask"],
+        output_names=["text_features"],
+        dynamic_axes={
+            "input_ids": {0: "batch_size", 1: "sequence_length"},
+            "attention_mask": {0: "batch_size", 1: "sequence_length"},
+            "text_features": {0: "batch_size"},
+        },
+        opset_version=13,
+    )
+
+
 def save_sklearn_model(model: BaseEstimator, x: np.ndarray, path: str) -> None:
     onx = to_onnx(model, x[:1].astype(np.float32))
     save_path = Path(path)
@@ -90,3 +109,12 @@ def predict(onnx_session: rt.InferenceSession, x: Union[np.ndarray, torch.Tensor
     output_name = onnx_session.get_outputs()[0].name
     input_value = format_inputs(x)
     return onnx_session.run([output_name], {input_name: input_value})[0]  # type: ignore[no-any-return]
+
+
+def predict_clip(onnx_session: rt.InferenceSession, x: dict[str, np.array]) -> np.ndarray:
+    input_name_1 = onnx_session.get_inputs()[0].name
+    input_name_2 = onnx_session.get_inputs()[1].name
+    output_name = onnx_session.get_outputs()[0].name
+    x[input_name_1] = x[input_name_1].astype(np.int64)
+    x[input_name_2] = x[input_name_2].astype(np.int64)
+    return onnx_session.run([output_name], dict(x))[0]  # type: ignore[no-any-return]
