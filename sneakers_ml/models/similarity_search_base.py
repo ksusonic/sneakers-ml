@@ -5,8 +5,6 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-import torch
-import torch.utils
 import torch.utils.data
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
@@ -15,6 +13,8 @@ from sneakers_ml.models.onnx_utils import get_device, get_session
 
 
 class SimilaritySearchBase(ABC):  # noqa: B024
+    """ """
+
     def __init__(self, embeddings_path: str, onnx_path: str, device: str = "cpu") -> None:
         self.embeddings_path = embeddings_path
         self.onnx_path = onnx_path
@@ -22,6 +22,15 @@ class SimilaritySearchBase(ABC):  # noqa: B024
 
     @staticmethod
     def save_features(path: str, numpy_features: np.ndarray, classes: np.ndarray, class_to_idx: dict[str, int]) -> None:
+        """
+
+        :param path: str:
+        :param numpy_features: np.ndarray:
+        :param classes: np.ndarray:
+        :param class_to_idx: dict[str:
+        :param int]:
+
+        """
         save_path = Path(path)
         save_path.parent.mkdir(parents=True, exist_ok=True)
         with save_path.open("wb") as save_file:
@@ -31,6 +40,11 @@ class SimilaritySearchBase(ABC):  # noqa: B024
 
     @staticmethod
     def load_features(path: str) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
+        """
+
+        :param path: str:
+
+        """
         with Path(path).open("rb") as file:
             numpy_features = np.load(file, allow_pickle=False)
             classes = np.load(file, allow_pickle=False)
@@ -40,6 +54,8 @@ class SimilaritySearchBase(ABC):  # noqa: B024
 
 
 class SimilaritySearchPredictor(SimilaritySearchBase):
+    """ """
+
     def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str, device: str = "cpu") -> None:
         super().__init__(embeddings_path, onnx_path, device)
 
@@ -53,13 +69,24 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
 
     @abstractmethod
     def get_features(self) -> np.ndarray:
+        """ """
         raise NotImplementedError
 
     @abstractmethod
     def predict(self, top_k: int) -> tuple[np.ndarray, np.ndarray]:
+        """
+
+        :param top_k: int:
+
+        """
         raise NotImplementedError
 
     def get_metadata(self, metadata_path: str) -> pd.DataFrame:
+        """
+
+        :param metadata_path: str:
+
+        """
         df = pd.read_csv(metadata_path)
         df = df.drop(
             ["brand_merge", "images_path", "collection_name", "color", "images_flattened", "title_without_color"],
@@ -76,6 +103,12 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         return df
 
     def get_similar(self, feature: np.ndarray, top_k: int) -> tuple[np.ndarray, np.ndarray]:
+        """
+
+        :param feature: np.ndarray:
+        :param top_k: int:
+
+        """
         similarity_matrix = cosine_similarity(self.numpy_features, feature).flatten()
         top_k_indices = np.argsort(similarity_matrix)[-top_k:][::-1]
 
@@ -102,6 +135,8 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
 
 
 class SimilaritySearchTrainer(SimilaritySearchBase):
+    """ """
+
     def __init__(self, image_folder: str, embeddings_path: str, onnx_path: str, device: str = "cpu") -> None:
         super().__init__(embeddings_path, onnx_path, device)
         self.image_folder = image_folder
@@ -114,21 +149,30 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
 
     @abstractmethod
     def create_onnx_model(self) -> None:
+        """ """
         raise NotImplementedError
 
     @abstractmethod
     def init_data(self) -> None:
+        """ """
         raise NotImplementedError
 
     @abstractmethod
     def init_model(self) -> None:
+        """ """
         raise NotImplementedError
 
     @abstractmethod
     def model_forward(self, data: Sequence[Any]) -> torch.Tensor:
+        """
+
+        :param data: Sequence[Any]:
+
+        """
         raise NotImplementedError
 
     def get_image_folder_features(self) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
+        """ """
         image_features = []
         with torch.inference_mode():
             for data in tqdm(self.dataloader, desc=self.image_folder):
@@ -142,6 +186,7 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
         return self.numpy_image_features, self.image_paths, self.class_to_idx
 
     def train(self) -> None:
+        """ """
         self.init_model()
         self.create_onnx_model()
         self.init_data()
