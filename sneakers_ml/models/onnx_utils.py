@@ -31,6 +31,7 @@ def get_device(device: str) -> str:
     :param device: str:
     :param device: str:
     :param device: str:
+    :param device: str:
 
     """
     if device.lower().startswith("cuda"):
@@ -60,6 +61,7 @@ def get_providers(device: str = "cpu") -> list[str]:
     :param device: str:  (Default value = "cpu")
     :param device: str:  (Default value = "cpu")
     :param device: str:  (Default value = "cpu")
+    :param device: str:  (Default value = "cpu")
 
     """
     return ["CUDAExecutionProvider", "CPUExecutionProvider"] if device == "cuda" else ["CPUExecutionProvider"]
@@ -68,6 +70,8 @@ def get_providers(device: str = "cpu") -> list[str]:
 def get_session(model_path: str, device: str = "cpu") -> rt.InferenceSession:
     """
 
+    :param model_path: str:
+    :param device: str:  (Default value = "cpu")
     :param model_path: str:
     :param device: str:  (Default value = "cpu")
     :param model_path: str:
@@ -173,6 +177,9 @@ def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor, m
     :param model: torch.nn.Module:
     :param torch_input_tensor: torch.Tensor:
     :param model_path: str:
+    :param model: torch.nn.Module:
+    :param torch_input_tensor: torch.Tensor:
+    :param model_path: str:
 
     """
     save_path = Path(model_path)
@@ -190,6 +197,9 @@ def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor, m
 def save_clip_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Tensor], model_path: str) -> None:
     """
 
+    :param model: torch.nn.Module:
+    :param torch_input_tensors: tuple[torch.Tensor]:
+    :param model_path: str:
     :param model: torch.nn.Module:
     :param torch_input_tensors: tuple[torch.Tensor]:
     :param model_path: str:
@@ -327,6 +337,9 @@ def save_sklearn_model(model: BaseEstimator, x: np.ndarray, path: str) -> None:
     :param model: BaseEstimator:
     :param x: np.ndarray:
     :param path: str:
+    :param model: BaseEstimator:
+    :param x: np.ndarray:
+    :param path: str:
 
     """
     onx = to_onnx(model, x[:1].astype(np.float32))
@@ -339,6 +352,8 @@ def save_sklearn_model(model: BaseEstimator, x: np.ndarray, path: str) -> None:
 def save_catboost_model(model: Union[CatBoostRegressor, CatBoostClassifier], path: str) -> None:
     """
 
+    :param model: Union[CatBoostRegressor:
+    :param CatBoostClassifier: param path: str:
     :param model: Union[CatBoostRegressor:
     :param CatBoostClassifier: param path: str:
     :param model: Union[CatBoostRegressor:
@@ -493,6 +508,11 @@ def save_model(
     :param torch: Tensor]:
     :param path: str:
     :param model: Union[BaseEstimator:
+    :param torch: nn.Module:
+    :param CatBoostClassifier: param x: Union[np.ndarray:
+    :param torch: Tensor]:
+    :param path: str:
+    :param model: Union[BaseEstimator:
     :param torch.nn.Module:
     :param CatBoostClassifier]:
     :param x: Union[np.ndarray:
@@ -513,6 +533,8 @@ def save_model(
 def format_inputs(x: Union[np.ndarray, torch.Tensor]) -> np.ndarray:
     """
 
+    :param x: Union[np.ndarray:
+    :param torch: Tensor]:
     :param x: Union[np.ndarray:
     :param torch: Tensor]:
     :param x: Union[np.ndarray:
@@ -621,6 +643,9 @@ def predict(onnx_session: rt.InferenceSession, x: Union[np.ndarray, torch.Tensor
     :param torch: Tensor]:
     :param onnx_session: rt.InferenceSession:
     :param x: Union[np.ndarray:
+    :param torch: Tensor]:
+    :param onnx_session: rt.InferenceSession:
+    :param x: Union[np.ndarray:
     :param torch.Tensor]:
 
     """
@@ -634,6 +659,9 @@ def predict(onnx_session: rt.InferenceSession, x: Union[np.ndarray, torch.Tensor
 def predict_clip(onnx_session: rt.InferenceSession, x: dict[str, np.array]) -> np.ndarray:
     """
 
+    :param onnx_session: rt.InferenceSession:
+    :param x: dict[str:
+    :param np: array]:
     :param onnx_session: rt.InferenceSession:
     :param x: dict[str:
     :param np: array]:
