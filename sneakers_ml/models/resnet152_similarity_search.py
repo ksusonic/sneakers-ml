@@ -27,7 +27,7 @@ class Identity(nn.Module):
     def forward(x: torch.Tensor) -> torch.Tensor:
         """
 
-        :param x: torch.Tensor: 
+        :param x: torch.Tensor:
 
         """
         return x
@@ -71,7 +71,7 @@ class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
     def model_forward(self, data: Sequence[Any]) -> torch.Tensor:
         """
 
-        :param data: Sequence[Any]: 
+        :param data: Sequence[Any]:
 
         """
         x = data[0].to(self.device)
@@ -98,7 +98,7 @@ class ResNet152SimilaritySearch(SimilaritySearchPredictor):
     def predict(self, top_k: int, image: Image.Image = None) -> tuple[np.ndarray, np.ndarray]:
         """
 
-        :param top_k: int: 
+        :param top_k: int:
         :param image: Image.Image:  (Default value = None)
 
         """
