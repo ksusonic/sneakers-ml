@@ -99,6 +99,7 @@ class Identity(nn.Module):
         :param x: torch.Tensor:
         :param x: torch.Tensor:
         :param x: torch.Tensor:
+        :param x: torch.Tensor: 
 
         """
         return x
@@ -218,6 +219,7 @@ class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
+        :param data: Sequence[Any]: 
 
         """
         x = data[0].to(self.device)
@@ -236,6 +238,7 @@ class ResNet152SimilaritySearch(SimilaritySearchPredictor):
     def get_features(self, images: Sequence[Image.Image] = None) -> np.ndarray:
         """
 
+        :param images: Sequence[Image.Image]:  (Default value = None)
         :param images: Sequence[Image.Image]:  (Default value = None)
         :param images: Sequence[Image.Image]:  (Default value = None)
         :param images: Sequence[Image.Image]:  (Default value = None)
@@ -468,6 +471,8 @@ class ResNet152SimilaritySearch(SimilaritySearchPredictor):
         :param top_k: int:
         :param image: Image.Image:  (Default value = None)
         :param top_k: int:
+        :param image: Image.Image:  (Default value = None)
+        :param top_k: int: 
         :param image: Image.Image:  (Default value = None)
 
         """
