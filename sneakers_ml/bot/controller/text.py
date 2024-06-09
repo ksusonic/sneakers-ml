@@ -1,4 +1,4 @@
-from aiohttp import ClientSession
+from aiohttp import ClientResponseError, ClientSession
 from telegram import InputMediaPhoto, Update
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
@@ -19,21 +19,28 @@ class TextController:
 
     @timed
     async def text_to_image(self, username: str, text: str, logger) -> [str, str]:
-        async with ClientSession() as session:
-            async with session.post(self.clip_url, json={"username": username, "text": text}) as resp:
-                content = await resp.json()
-                resp.raise_for_status()
+        try:
+            async with ClientSession() as session:
+                async with session.post(self.clip_url, json={"username": username, "text": text}) as resp:
+                    content = await resp.json()
+                    resp.raise_for_status()
 
-                resp_text = "\n".join(
-                    [
-                        f"👟👟 *[{escape(meta['title']).upper()}]({escape(meta['url'])})*\n"
-                        + f"Brand: *{escape(meta['brand'])}*\n"
-                        + f"Price: {escape(meta['price'])}\n"
-                        for meta in content["metadata"]
-                    ]
-                )
+                    resp_text = "\n".join(
+                        [
+                            f"👟👟 *[{escape(meta['title']).upper()}]({escape(meta['url'])})*\n"
+                            + f"Brand: *{escape(meta['brand'])}*\n"
+                            + f"Price: {escape(meta['price'])}\n"
+                            for meta in content["metadata"]
+                        ]
+                    )
 
-                return resp_text, content["images"]
+                    return resp_text, content["images"]
+        except ClientResponseError as e:
+            logger.error("Got response error from classify-brand: {}", e)
+        except Exception as e:
+            logger.error("Got exception while trying to classify brand: {}", e)
+
+        return escape("Oh no! Could not compose image, sorry =(")
 
     async def text_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         logger = self._logger.bind(req_id=update.update_id)

@@ -28,7 +28,7 @@ async def load_model():
     logger.info("Loaded ResNet152SimilaritySearch")
 
 
-@router.post("/resnet152/")
+@router.post("/upload/")
 async def post_similarity_search(image: UploadFile) -> Response:
     image.file.seek(0)
     image = Image.open(image.file)
