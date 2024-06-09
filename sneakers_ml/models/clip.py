@@ -53,7 +53,7 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
         self.processor = CLIPProcessor.from_pretrained(clip_model_name)
 
     def get_features(self, text_query: Union[Sequence[str], str] = None) -> np.ndarray:
-        inputs = self.processor(text=text_query, return_tensors="np", padding=True)
+        inputs = self.processor(text=text_query, return_tensors="np", padding=True, truncation=True)
         return predict_clip(self.onnx_session, inputs)
 
     def predict(self, top_k: int, text_query: str = None) -> tuple[np.ndarray, np.ndarray]:
