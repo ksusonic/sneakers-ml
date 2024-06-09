@@ -4,8 +4,7 @@ from typing import Union
 import numpy as np
 import onnxruntime as rt
 import torch
-from catboost import CatBoostClassifier
-from catboost import CatBoostRegressor
+from catboost import CatBoostClassifier, CatBoostRegressor
 from skl2onnx import to_onnx
 from sklearn.base import BaseEstimator
 
@@ -131,8 +130,7 @@ def get_providers(device: str = "cpu") -> list[str]:
     :param device: str:  (Default value = "cpu")
 
     """
-    return ["CUDAExecutionProvider", "CPUExecutionProvider"
-            ] if device == "cuda" else ["CPUExecutionProvider"]
+    return ["CUDAExecutionProvider", "CPUExecutionProvider"] if device == "cuda" else ["CPUExecutionProvider"]
 
 
 def get_session(model_path: str, device: str = "cpu") -> rt.InferenceSession:
@@ -251,8 +249,7 @@ def get_session(model_path: str, device: str = "cpu") -> rt.InferenceSession:
     return rt.InferenceSession(model_path, providers=providers)
 
 
-def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor,
-                     model_path: str) -> None:
+def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor, model_path: str) -> None:
     """
 
     :param model: torch.nn.Module:
@@ -424,20 +421,11 @@ def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor,
         str(model_path),
         input_names=["input"],
         output_names=["output"],
-        dynamic_axes={
-            "input": {
-                0: "batch_size"
-            },
-            "output": {
-                0: "batch_size"
-            }
-        },
+        dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
     )
 
 
-def save_clip_model(model: torch.nn.Module,
-                    torch_input_tensors: tuple[torch.Tensor],
-                    model_path: str) -> None:
+def save_clip_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Tensor], model_path: str) -> None:
     """
 
     :param model: torch.nn.Module:
@@ -611,17 +599,9 @@ def save_clip_model(model: torch.nn.Module,
         input_names=["input_ids", "attention_mask"],
         output_names=["text_features"],
         dynamic_axes={
-            "input_ids": {
-                0: "batch_size",
-                1: "sequence_length"
-            },
-            "attention_mask": {
-                0: "batch_size",
-                1: "sequence_length"
-            },
-            "text_features": {
-                0: "batch_size"
-            },
+            "input_ids": {0: "batch_size", 1: "sequence_length"},
+            "attention_mask": {0: "batch_size", 1: "sequence_length"},
+            "text_features": {0: "batch_size"},
         },
         opset_version=13,
     )
@@ -798,8 +778,7 @@ def save_sklearn_model(model: BaseEstimator, x: np.ndarray, path: str) -> None:
         file.write(onx.SerializeToString())
 
 
-def save_catboost_model(model: Union[CatBoostRegressor, CatBoostClassifier],
-                        path: str) -> None:
+def save_catboost_model(model: Union[CatBoostRegressor, CatBoostClassifier], path: str) -> None:
     """
 
     :param model: Union[CatBoostRegressor:
@@ -926,8 +905,7 @@ def save_catboost_model(model: Union[CatBoostRegressor, CatBoostClassifier],
 
 
 def save_model(
-    model: Union[BaseEstimator, torch.nn.Module, CatBoostRegressor,
-                 CatBoostClassifier],
+    model: Union[BaseEstimator, torch.nn.Module, CatBoostRegressor, CatBoostClassifier],
     x: Union[np.ndarray, torch.Tensor],
     path: str,
 ) -> None:
@@ -1332,8 +1310,7 @@ def format_inputs(x: Union[np.ndarray, torch.Tensor]) -> np.ndarray:
     raise ValueError(msg)
 
 
-def predict(onnx_session: rt.InferenceSession,
-            x: Union[np.ndarray, torch.Tensor]) -> np.ndarray:
+def predict(onnx_session: rt.InferenceSession, x: Union[np.ndarray, torch.Tensor]) -> np.ndarray:
     """
 
     :param onnx_session: rt.InferenceSession:
@@ -1504,8 +1481,7 @@ def predict(onnx_session: rt.InferenceSession,
     return onnx_session.run([output_name], {input_name: input_value})[0]
 
 
-def predict_clip(onnx_session: rt.InferenceSession,
-                 x: dict[str, np.array]) -> np.ndarray:
+def predict_clip(onnx_session: rt.InferenceSession, x: dict[str, np.array]) -> np.ndarray:
     """
 
     :param onnx_session: rt.InferenceSession:
