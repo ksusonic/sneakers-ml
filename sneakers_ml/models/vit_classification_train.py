@@ -244,8 +244,8 @@ class ViTClassificationTrainer:
         :param torch: Tensor]:
         :param example_batch: dict[str:
         :param torch: Tensor]:
-        :param example_batch: dict[str: 
-        :param torch.Tensor]: 
+        :param example_batch: dict[str:
+        :param torch.Tensor]:
 
         """
         inputs = self.processor(list(example_batch["image"]), return_tensors="pt")
@@ -407,8 +407,8 @@ class ViTClassificationTrainer:
         :param torch: Tensor]]:
         :param batch: Sequence[dict[str:
         :param torch: Tensor]]:
-        :param batch: Sequence[dict[str: 
-        :param torch.Tensor]]: 
+        :param batch: Sequence[dict[str:
+        :param torch.Tensor]]:
 
         """
         return {
@@ -495,7 +495,7 @@ class ViTClassificationTrainer:
         :param p: transformers.trainer_utils.EvalPrediction:
         :param p: transformers.trainer_utils.EvalPrediction:
         :param p: transformers.trainer_utils.EvalPrediction:
-        :param p: transformers.trainer_utils.EvalPrediction: 
+        :param p: transformers.trainer_utils.EvalPrediction:
 
         """
         predictions = np.argmax(p.predictions, axis=1)
