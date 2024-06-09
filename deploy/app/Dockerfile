@@ -1,49 +1,44 @@
-FROM nvidia/cuda:12.3.1-base-ubuntu22.04 as base
+FROM python:3.9-bullseye AS base
 
 LABEL authors="Slava and Daniil, miem-refugees"
 
-    # Python
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    # pip
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    \
-    # Poetry
-    # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=1.7.1 \
-    # make poetry install to this location
-    POETRY_HOME="/opt/poetry" \
-    # do not ask any interactive question
-    POETRY_NO_INTERACTION=1 \
-    # never create virtual environment automaticly, only use env prepared by us
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    #
-    PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv"
-
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
-
-
-FROM base as builder-base
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc python3-dev \
-    python3.9 \
-    curl ffmpeg libsm6 libxext6
+    # OpenCV dependencies
+    make ffmpeg libsm6 libxext6
 
-RUN --mount=type=cache,target=/root/.cache \
-    curl -sSL https://install.python-poetry.org | python3 -
+FROM python:3.9-slim AS builder
 
-WORKDIR $PYSETUP_PATH
-COPY poetry.lock pyproject.toml ./
+RUN pip install poetry
 
-RUN --mount=type=cache,target=/root/.cache \
-    poetry install --with api
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    POETRY_VIRTUALENVS_CREATE=1 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
 
-COPY . /app/
 WORKDIR /app
 
+COPY pyproject.toml poetry.lock ./
+
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR  \
+    poetry install --with api
+
+FROM base as runtime
+
+WORKDIR /app
+
+ENV VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH" \
+    PYTHONPATH=/app
+
+COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+
+COPY config /app/config
+COPY sneakers_ml /app/sneakers_ml
+
+# Models binaries
+ADD https://storage.yandexcloud.net/sneaker-ml-models/brand-cls-models.tar.gz ./
+# or use local add
+#ADD ./build/brand-cls-models.tar.gz ./
+
 EXPOSE 8000
-ENTRYPOINT [ "make", "api" ]
+ENTRYPOINT [ "uvicorn", "sneakers_ml.app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]

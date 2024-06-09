@@ -34,7 +34,7 @@ class ImageController:
                 )
                 return joined
         except ClientResponseError as e:
-            logger.error("Got response error from classify-brand: {}\n{}", e, content)
+            logger.error("Got response error from classify-brand: {}", e)
         except Exception as e:
             logger.error("Got exception while trying to classify brand: {}", e)
 

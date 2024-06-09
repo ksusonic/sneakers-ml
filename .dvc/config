@@ -5,3 +5,7 @@
     url = s3://sneakers-ml/dvcstore
     endpointurl = https://storage.yandexcloud.net
     region = ru-central1
+['remote "model-storage"']
+    url = s3://sneaker-ml-model
+    endpointurl = https://storage.yandexcloud.net
+    region = ru-central1
