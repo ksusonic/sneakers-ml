@@ -70,7 +70,7 @@ class Identity(nn.Module):
         :param x: torch.Tensor:
         :param x: torch.Tensor:
         :param x: torch.Tensor:
-        :param x: torch.Tensor: 
+        :param x: torch.Tensor:
 
         """
         return x
@@ -157,7 +157,7 @@ class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
-        :param data: Sequence[Any]: 
+        :param data: Sequence[Any]:
 
         """
         x = data[0].to(self.device)
@@ -311,7 +311,7 @@ class ResNet152SimilaritySearch(SimilaritySearchPredictor):
         :param image: Image.Image:  (Default value = None)
         :param top_k: int:
         :param image: Image.Image:  (Default value = None)
-        :param top_k: int: 
+        :param top_k: int:
         :param image: Image.Image:  (Default value = None)
 
         """
