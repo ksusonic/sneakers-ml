@@ -48,6 +48,10 @@ class SimilaritySearchBase(ABC):  # noqa: B024
         :param numpy_features: np.ndarray:
         :param classes: np.ndarray:
         :param class_to_idx: dict[str:
+        :param int: param path: str:
+        :param numpy_features: np.ndarray:
+        :param classes: np.ndarray:
+        :param class_to_idx: dict[str:
         :param int:
         :param path: str:
         :param numpy_features: np.ndarray:
@@ -67,6 +71,7 @@ class SimilaritySearchBase(ABC):  # noqa: B024
     def load_features(path: str) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
         """
 
+        :param path: str:
         :param path: str:
         :param path: str:
         :param path: str:
@@ -114,6 +119,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param top_k: int:
         :param top_k: int:
         :param top_k: int:
+        :param top_k: int:
 
         """
         raise NotImplementedError
@@ -121,6 +127,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
     def get_metadata(self, metadata_path: str) -> pd.DataFrame:
         """
 
+        :param metadata_path: str:
         :param metadata_path: str:
         :param metadata_path: str:
         :param metadata_path: str:
@@ -148,6 +155,8 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
     def get_similar(self, feature: np.ndarray, top_k: int) -> tuple[np.ndarray, np.ndarray]:
         """
 
+        :param feature: np.ndarray:
+        :param top_k: int:
         :param feature: np.ndarray:
         :param top_k: int:
         :param feature: np.ndarray:
@@ -221,6 +230,7 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
     def model_forward(self, data: Sequence[Any]) -> torch.Tensor:
         """
 
+        :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
