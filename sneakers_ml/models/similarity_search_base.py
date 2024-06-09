@@ -1,4 +1,5 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
@@ -9,7 +10,8 @@ import torch.utils.data
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
-from sneakers_ml.models.onnx_utils import get_device, get_session
+from sneakers_ml.models.onnx_utils import get_device
+from sneakers_ml.models.onnx_utils import get_session
 
 
 class SimilaritySearchBase(ABC):  # noqa: B024
