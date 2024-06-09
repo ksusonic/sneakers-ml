@@ -201,8 +201,7 @@ class SimilaritySearchBase(ABC):  # noqa: B024
         with save_path.open("wb") as save_file:
             np.save(save_file, numpy_features, allow_pickle=False)
             np.save(save_file, classes, allow_pickle=False)
-            np.save(save_file, np.array(
-                list(class_to_idx.items())), allow_pickle=False)
+            np.save(save_file, np.array(list(class_to_idx.items())), allow_pickle=False)
 
     @staticmethod
     def load_features(path: str) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
@@ -256,8 +255,7 @@ class SimilaritySearchBase(ABC):  # noqa: B024
             numpy_features = np.load(file, allow_pickle=False)
             classes = np.load(file, allow_pickle=False)
             class_to_idx_numpy = np.load(file, allow_pickle=False)
-            class_to_idx = dict(
-                zip(class_to_idx_numpy[:, 0], class_to_idx_numpy[:, 1].astype(int)))
+            class_to_idx = dict(zip(class_to_idx_numpy[:, 0], class_to_idx_numpy[:, 1].astype(int)))
             return numpy_features, classes, class_to_idx
 
 
@@ -270,8 +268,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         self.metadata_path = metadata_path
         self.df = self.get_metadata(self.metadata_path)
 
-        self.numpy_features, self.classes, self.class_to_idx = self.load_features(
-            self.embeddings_path)
+        self.numpy_features, self.classes, self.class_to_idx = self.load_features(self.embeddings_path)
         self.idx_to_class = {str(v): k for k, v in self.class_to_idx.items()}
 
         self.onnx_session = get_session(self.onnx_path)
@@ -380,8 +377,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         """
         df = pd.read_csv(metadata_path)
         df = df.drop(
-            ["brand_merge", "images_path", "collection_name",
-                "color", "images_flattened", "title_without_color"],
+            ["brand_merge", "images_path", "collection_name", "color", "images_flattened", "title_without_color"],
             axis=1,
         )
         df["title"] = df["title"].apply(eval)
@@ -390,8 +386,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         df["pricecurrency"] = df["pricecurrency"].apply(eval)
         df["website"] = df["website"].apply(eval)
         df["url"] = df["url"].apply(eval)
-        df = df.explode(["title", "brand", "price",
-                        "pricecurrency", "url", "website"])
+        df = df.explode(["title", "brand", "price", "pricecurrency", "url", "website"])
 
         return df
 
@@ -484,14 +479,12 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param top_k: int:
 
         """
-        similarity_matrix = cosine_similarity(
-            self.numpy_features, feature).flatten()
+        similarity_matrix = cosine_similarity(self.numpy_features, feature).flatten()
         top_k_indices = np.argsort(similarity_matrix)[-top_k:][::-1]
 
         similar_objects = self.classes[top_k_indices]
         similar_images = similar_objects[:, 0]
-        similar_models = np.vectorize(
-            self.idx_to_class.get)(similar_objects[:, 1])
+        similar_models = np.vectorize(self.idx_to_class.get)(similar_objects[:, 1])
 
         similar_metadata_dump = (
             self.df[self.df["title_merge"].isin(set(similar_models.tolist()))]
@@ -609,5 +602,4 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
         self.create_onnx_model()
         self.init_data()
         self.numpy_image_features, self.image_paths, self.class_to_idx = self.get_image_folder_features()
-        self.save_features(self.embeddings_path, self.numpy_image_features,
-                           self.image_paths, self.class_to_idx)
+        self.save_features(self.embeddings_path, self.numpy_image_features, self.image_paths, self.class_to_idx)

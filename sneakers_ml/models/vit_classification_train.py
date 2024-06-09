@@ -29,15 +29,11 @@ class ViTClassificationTrainer:
 
     def load_dataset(self) -> None:
         """ """
-        self.processor = ViTImageProcessor.from_pretrained(
-            self.cfg.models.vit_transformer.hf_name)
+        self.processor = ViTImageProcessor.from_pretrained(self.cfg.models.vit_transformer.hf_name)
         self.dataset = load_dataset("imagefolder", data_dir=self.cfg.data.path)
-        self.processed_train = self.dataset["train"].with_transform(
-            self.transform)
-        self.processed_val = self.dataset["validation"].with_transform(
-            self.transform)
-        self.processed_test = self.dataset["test"].with_transform(
-            self.transform)
+        self.processed_train = self.dataset["train"].with_transform(self.transform)
+        self.processed_val = self.dataset["validation"].with_transform(self.transform)
+        self.processed_test = self.dataset["test"].with_transform(self.transform)
 
     def set_training_args(self) -> None:
         """ """
@@ -80,16 +76,14 @@ class ViTClassificationTrainer:
         )
 
         with Path(self.cfg.models.vit_transformer.idx_to_classes).open("wb") as save_file:
-            np.save(save_file, np.array(
-                list(self.label2id.items())), allow_pickle=False)
+            np.save(save_file, np.array(list(self.label2id.items())), allow_pickle=False)
 
     def save_class_to_idx(self) -> None:
         """ """
         save_path = Path(self.cfg.models.vit_transformer.idx_to_classes)
         save_path.parent.mkdir(parents=True, exist_ok=True)
         with Path(self.cfg.models.vit_transformer.idx_to_classes).open("wb") as save_file:
-            np.save(save_file, np.array(
-                list(self.label2id.items())), allow_pickle=False)
+            np.save(save_file, np.array(list(self.label2id.items())), allow_pickle=False)
 
     def transform(self, example_batch: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
         """
@@ -180,8 +174,7 @@ class ViTClassificationTrainer:
         :param torch.Tensor]:
 
         """
-        inputs = self.processor(
-            list(example_batch["image"]), return_tensors="pt")
+        inputs = self.processor(list(example_batch["image"]), return_tensors="pt")
         inputs["labels"] = example_batch["label"]
         return inputs  # type: ignore[no-any-return]
 
@@ -329,14 +322,10 @@ class ViTClassificationTrainer:
         predictions = np.argmax(p.predictions, axis=1)
         references = p.label_ids
 
-        f1_macro = self.metric_f1.compute(
-            predictions=predictions, references=references, average="macro")["f1"]
-        f1_micro = self.metric_f1.compute(
-            predictions=predictions, references=references, average="micro")["f1"]
-        f1_weighted = self.metric_f1.compute(
-            predictions=predictions, references=references, average="weighted")["f1"]
-        accuracy = self.metric_accuracy.compute(
-            predictions=predictions, references=references)["accuracy"]
+        f1_macro = self.metric_f1.compute(predictions=predictions, references=references, average="macro")["f1"]
+        f1_micro = self.metric_f1.compute(predictions=predictions, references=references, average="micro")["f1"]
+        f1_weighted = self.metric_f1.compute(predictions=predictions, references=references, average="weighted")["f1"]
+        accuracy = self.metric_accuracy.compute(predictions=predictions, references=references)["accuracy"]
 
         return {"f1_macro": f1_macro, "f1_micro": f1_micro, "f1_weighted": f1_weighted, "accuracy": accuracy}
 
@@ -366,12 +355,10 @@ class ViTClassificationTrainer:
 
         logger.info(str(true_metrics))
 
-        loaded_model = ViTForImageClassification.from_pretrained(
-            self.temp_model_path)
+        loaded_model = ViTForImageClassification.from_pretrained(self.temp_model_path)
         loaded_model.eval()
         torch_input = (torch.randn(1, 3, 224, 224),)
-        save_torch_model(loaded_model, torch_input,
-                         self.cfg.models.vit_transformer.onnx_path)
+        save_torch_model(loaded_model, torch_input, self.cfg.models.vit_transformer.onnx_path)
 
         metrics = list(true_metrics.values())
         for i, metric in enumerate(metrics):
@@ -379,8 +366,7 @@ class ViTClassificationTrainer:
         results_save_path = Path(self.cfg.paths.results)
         with results_save_path.open("a", newline="", encoding="utf-8") as csv_file:
             csv_writer = csv.writer(csv_file)
-            csv_writer.writerow(
-                [self.cfg.models.vit_transformer.name, *metrics])
+            csv_writer.writerow([self.cfg.models.vit_transformer.name, *metrics])
 
 
 if __name__ == "__main__":
