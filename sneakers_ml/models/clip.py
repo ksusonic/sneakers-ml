@@ -95,6 +95,7 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
+        :param data: Sequence[Any]: 
 
         """
         images = data[0].to(self.device)["pixel_values"].squeeze(1)
@@ -200,6 +201,8 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
         :param text_query: Union[Sequence[str]:
         :param str: Default value = None)
         :param text_query: Union[Sequence[str]:
+        :param str: Default value = None)
+        :param text_query: Union[Sequence[str]: 
         :param str]:  (Default value = None)
 
         """
@@ -298,6 +301,8 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
         :param top_k: int:
         :param text_query: str:  (Default value = None)
         :param top_k: int:
+        :param text_query: str:  (Default value = None)
+        :param top_k: int: 
         :param text_query: str:  (Default value = None)
 
         """
