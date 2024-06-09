@@ -97,7 +97,8 @@ def save_model(
 
 def format_inputs(x: Union[np.ndarray, torch.Tensor]) -> np.ndarray:
     if isinstance(x, torch.Tensor):
-        return x.detach().cpu().numpy() if x.requires_grad else x.cpu().numpy()  # type: ignore[no-any-return]
+        # type: ignore[no-any-return]
+        return x.detach().cpu().numpy() if x.requires_grad else x.cpu().numpy()
     if isinstance(x, np.ndarray):
         return x.astype(np.float32)
     msg = "Unknown input"
@@ -108,7 +109,8 @@ def predict(onnx_session: rt.InferenceSession, x: Union[np.ndarray, torch.Tensor
     input_name = onnx_session.get_inputs()[0].name
     output_name = onnx_session.get_outputs()[0].name
     input_value = format_inputs(x)
-    return onnx_session.run([output_name], {input_name: input_value})[0]  # type: ignore[no-any-return]
+    # type: ignore[no-any-return]
+    return onnx_session.run([output_name], {input_name: input_value})[0]
 
 
 def predict_clip(onnx_session: rt.InferenceSession, x: dict[str, np.array]) -> np.ndarray:
@@ -117,4 +119,5 @@ def predict_clip(onnx_session: rt.InferenceSession, x: dict[str, np.array]) -> n
     output_name = onnx_session.get_outputs()[0].name
     x[input_name_1] = x[input_name_1].astype(np.int64)
     x[input_name_2] = x[input_name_2].astype(np.int64)
-    return onnx_session.run([output_name], dict(x))[0]  # type: ignore[no-any-return]
+    # type: ignore[no-any-return]
+    return onnx_session.run([output_name], dict(x))[0]
