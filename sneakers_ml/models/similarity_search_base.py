@@ -364,6 +364,10 @@ class SimilaritySearchBase(ABC):  # noqa: B024
         :param numpy_features: np.ndarray:
         :param classes: np.ndarray:
         :param class_to_idx: dict[str:
+        :param int: param path: str:
+        :param numpy_features: np.ndarray:
+        :param classes: np.ndarray:
+        :param class_to_idx: dict[str:
         :param int:
         :param path: str:
         :param numpy_features: np.ndarray:
@@ -383,6 +387,7 @@ class SimilaritySearchBase(ABC):  # noqa: B024
     def load_features(path: str) -> tuple[np.ndarray, np.ndarray, dict[str, int]]:
         """
 
+        :param path: str:
         :param path: str:
         :param path: str:
         :param path: str:
@@ -588,6 +593,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param top_k: int:
         :param top_k: int:
         :param top_k: int:
+        :param top_k: int:
 
         """
         raise NotImplementedError
@@ -595,6 +601,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
     def get_metadata(self, metadata_path: str) -> pd.DataFrame:
         """
 
+        :param metadata_path: str:
         :param metadata_path: str:
         :param metadata_path: str:
         :param metadata_path: str:
@@ -873,6 +880,8 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param top_k: int:
         :param feature: np.ndarray:
         :param top_k: int:
+        :param feature: np.ndarray:
+        :param top_k: int:
 
         """
         similarity_matrix = cosine_similarity(self.numpy_features, feature).flatten()
@@ -932,6 +941,7 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
     def model_forward(self, data: Sequence[Any]) -> torch.Tensor:
         """
 
+        :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
