@@ -26,7 +26,7 @@ class TextController:
 
                 resp_text = "\n".join(
                     [
-                        f"👟👟 *[{escape(meta['title'])}]({escape(meta['url'])})*\n"
+                        f"👟👟 *[{escape(meta['title']).upper()}]({escape(meta['url'])})*\n"
                         + f"Brand: *{escape(meta['brand'])}*\n"
                         + f"Price: {escape(meta['price'])}\n"
                         for meta in content["metadata"]
