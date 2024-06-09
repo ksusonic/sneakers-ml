@@ -73,9 +73,9 @@ class BrandsClassifier:
             string_predictions |= string_result
 
         for model in self.dl_models:
-            pred, string_pred = model.predict(images)
+            pred = model.predict(images)
             predictions["resnet152"] = pred
-            string_predictions["resnet152"] = string_pred
+            string_predictions["resnet152"] = pred
 
         return predictions, string_predictions
 
