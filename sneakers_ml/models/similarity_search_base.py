@@ -276,12 +276,16 @@ class SimilaritySearchBase(ABC):  # noqa: B024
         :param numpy_features: np.ndarray:
         :param classes: np.ndarray:
         :param class_to_idx: dict[str:
-        :param int:
-        :param path: str:
+        :param int: param path: str:
         :param numpy_features: np.ndarray:
         :param classes: np.ndarray:
         :param class_to_idx: dict[str:
-        :param int]:
+        :param int: 
+        :param path: str: 
+        :param numpy_features: np.ndarray: 
+        :param classes: np.ndarray: 
+        :param class_to_idx: dict[str: 
+        :param int]: 
 
         """
         save_path = Path(path)
@@ -359,6 +363,7 @@ class SimilaritySearchBase(ABC):  # noqa: B024
         :param path: str:
         :param path: str:
         :param path: str:
+        :param path: str: 
 
         """
         with Path(path).open("rb") as file:
@@ -456,6 +461,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param top_k: int:
         :param top_k: int:
         :param top_k: int:
+        :param top_k: int: 
 
         """
         raise NotImplementedError
@@ -527,6 +533,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param metadata_path: str:
         :param metadata_path: str:
         :param metadata_path: str:
+        :param metadata_path: str: 
 
         """
         df = pd.read_csv(metadata_path)
@@ -675,6 +682,8 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         :param top_k: int:
         :param feature: np.ndarray:
         :param top_k: int:
+        :param feature: np.ndarray: 
+        :param top_k: int: 
 
         """
         similarity_matrix = cosine_similarity(self.numpy_features, feature).flatten()
@@ -798,6 +807,7 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
         :param data: Sequence[Any]:
+        :param data: Sequence[Any]: 
 
         """
         raise NotImplementedError
