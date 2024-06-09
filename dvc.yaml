@@ -1,0 +1,12 @@
+stages:
+  build_models:
+    cmd: tar czf build/brand-cls-models.tar.gz data/models/brands-classification/ data/features/brands-classification/
+    deps:
+      - data/models/brands-classification/
+      - data/features/brands-classification/
+    outs:
+      - build/brand-cls-models.tar.gz
+  upload_brand_classification_models:
+    cmd: aws s3 cp build/brand-cls-models.tar.gz s3://sneaker-ml-models/brand-cls-models.tar.gz --endpoint-url https://storage.yandexcloud.net
+    deps:
+      - build/brand-cls-models.tar.gz
