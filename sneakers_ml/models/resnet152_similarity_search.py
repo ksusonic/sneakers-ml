@@ -3,19 +3,15 @@ from typing import Any
 
 import numpy as np
 import torch
-from hydra import compose
-from hydra import initialize
+from hydra import compose, initialize
 from PIL import Image
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
-from torchvision.models import resnet152
-from torchvision.models import ResNet152_Weights
+from torchvision.models import ResNet152_Weights, resnet152
 
-from sneakers_ml.models.onnx_utils import predict
-from sneakers_ml.models.onnx_utils import save_torch_model
-from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor
-from sneakers_ml.models.similarity_search_base import SimilaritySearchTrainer
+from sneakers_ml.models.onnx_utils import predict, save_torch_model
+from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor, SimilaritySearchTrainer
 
 
 class Identity(nn.Module):
@@ -72,26 +68,18 @@ class Identity(nn.Module):
 class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
     """ """
 
-    def __init__(self, image_folder: str, onnx_path: str, embeddings_path: str,
-                 device: str) -> None:
-        super().__init__(image_folder=image_folder,
-                         embeddings_path=embeddings_path,
-                         onnx_path=onnx_path,
-                         device=device)
+    def __init__(self, image_folder: str, onnx_path: str, embeddings_path: str, device: str) -> None:
+        super().__init__(image_folder=image_folder, embeddings_path=embeddings_path, onnx_path=onnx_path, device=device)
         self.model: torch.nn.Module = None
         self.preprocess = None
         self.weights: ResNet152_Weights.IMAGENET1K_V2 = None
 
     def init_data(self) -> None:
         """ """
-        self.dataset = ImageFolder(self.image_folder,
-                                   transform=self.preprocess)
-        self.dataloader = DataLoader(self.dataset,
-                                     batch_size=128,
-                                     shuffle=False,
-                                     drop_last=False,
-                                     num_workers=6,
-                                     pin_memory=False)
+        self.dataset = ImageFolder(self.image_folder, transform=self.preprocess)
+        self.dataloader = DataLoader(
+            self.dataset, batch_size=128, shuffle=False, drop_last=False, num_workers=6, pin_memory=False
+        )
 
     def init_model(self) -> None:
         """ """
@@ -161,8 +149,7 @@ class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
 class ResNet152SimilaritySearch(SimilaritySearchPredictor):
     """ """
 
-    def __init__(self, embeddings_path: str, onnx_path: str,
-                 metadata_path: str) -> None:
+    def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str) -> None:
         super().__init__(embeddings_path, onnx_path, metadata_path)
 
         self.weights = ResNet152_Weights.DEFAULT
@@ -209,13 +196,10 @@ class ResNet152SimilaritySearch(SimilaritySearchPredictor):
         :param images: Sequence[Image.Image]:  (Default value = None)
 
         """
-        preprocessed_images = torch.stack(
-            [self.preprocess(image) for image in images])
+        preprocessed_images = torch.stack([self.preprocess(image) for image in images])
         return predict(self.onnx_session, preprocessed_images)
 
-    def predict(self,
-                top_k: int,
-                image: Image.Image = None) -> tuple[np.ndarray, np.ndarray]:
+    def predict(self, top_k: int, image: Image.Image = None) -> tuple[np.ndarray, np.ndarray]:
         """
 
         :param top_k: int:
@@ -297,24 +281,14 @@ class ResNet152SimilaritySearch(SimilaritySearchPredictor):
 
 if __name__ == "__main__":
     # train
-    with initialize(version_base=None,
-                    config_path="../../config",
-                    job_name="similarity-search-features-create"):
+    with initialize(version_base=None, config_path="../../config", job_name="similarity-search-features-create"):
         cfg = compose(config_name="cfg_similarity_search")
-        trainer = ResNet152SimilaritySearchTrainer(cfg.images_path,
-                                                   cfg.model_path,
-                                                   cfg.embeddings_path,
-                                                   cfg.device)
+        trainer = ResNet152SimilaritySearchTrainer(cfg.images_path, cfg.model_path, cfg.embeddings_path, cfg.device)
         trainer.train()
 
     # predict
-    with initialize(version_base=None,
-                    config_path="../../config",
-                    job_name="similarity-search-features-predict"):
+    with initialize(version_base=None, config_path="../../config", job_name="similarity-search-features-predict"):
         cfg = compose(config_name="cfg_similarity_search")
-        predictor = ResNet152SimilaritySearch(cfg.embeddings_path,
-                                              cfg.model_path,
-                                              cfg.metadata_path)
-        test_image = Image.open(
-            "data/training/brands-classification/train/adidas/1.jpeg")
+        predictor = ResNet152SimilaritySearch(cfg.embeddings_path, cfg.model_path, cfg.metadata_path)
+        test_image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
         print(predictor.predict(3, test_image))
