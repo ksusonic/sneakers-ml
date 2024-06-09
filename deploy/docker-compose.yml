@@ -3,14 +3,16 @@ name: "sneakers-ml"
 services:
   bot:
     container_name: sneakers-ml-bot
-    image: cr.yandex/crp9sd2f3p1o3mfu9664/sneakers-ml-bot
+    image: ghcr.io/miem-refugees/sneakers-ml-bot:trunk
     restart: always
+    depends_on:
+      - api
     environment:
       - CONTAINER_LOGGING=True
       - API_HOST=http://api:8000
   api:
     container_name: sneakers-ml-api
-    image: cr.yandex/crp9sd2f3p1o3mfu9664/sneakers-ml-api
+    image: ghcr.io/miem-refugees/sneakers-ml-api:trunk
     restart: always
     depends_on:
       - redis
@@ -19,6 +21,8 @@ services:
     environment:
       - PORT=8000
       - REDIS_HOST=redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
   redis:
     container_name: sneakers-ml-redis
     image: redis:alpine
