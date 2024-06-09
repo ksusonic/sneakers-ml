@@ -84,7 +84,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         similar_models = np.vectorize(self.idx_to_class.get)(similar_objects[:, 1])
 
         similar_metadata_dump = (
-            self.df[self.df["title_merge"].isin(set(similar_models.tolist()))]
+            self.df[self.df["title_merge"].isin(np.unique(similar_models).tolist())]
             .groupby(["title", "website"])
             .agg(
                 {
@@ -95,6 +95,9 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
                     "url": "first",
                 }
             )
+            .reset_index()
+            .set_index("title_merge")
+            .loc[similar_models]
             .reset_index()
             .to_numpy()
         )
