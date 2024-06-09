@@ -19,8 +19,8 @@ class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
         super().__init__(image_folder=image_folder, embeddings_path=embeddings_path, onnx_path=onnx_path, device=device)
 
         self.clip_model_name = clip_model_name
-        self.processor = None
-        self.clip_model = None
+        self.processor: CLIPProcessor = None
+        self.clip_model: CLIPModel = None
 
     def init_data(self) -> None:
         self.dataset = ImageFolder(self.image_folder, transform=lambda x: self.processor(images=x, return_tensors="pt"))
