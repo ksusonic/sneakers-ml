@@ -25,7 +25,7 @@ def main():
 
     with logger.contextualize(req_id="init"):
         logger.debug("Loaded config: {}", config)
-        logger.info("Started polling with {} handlers: ", len(application.handlers.values()))
+        logger.info("Started polling with handlers: {}", *application.handlers.values())
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
