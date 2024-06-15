@@ -1,3 +1,4 @@
+import csv
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from pathlib import Path
@@ -8,7 +9,9 @@ import pandas as pd
 import torch
 import torch.utils
 import torch.utils.data
+from PIL import Image
 from sklearn.metrics.pairwise import cosine_similarity
+from torchvision.datasets import ImageFolder
 from tqdm import tqdm
 
 from sneakers_ml.models.onnx_utils import get_device, get_session
@@ -108,7 +111,7 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
     def __init__(self, image_folder: str, embeddings_path: str, onnx_path: str, device: str = "cpu") -> None:
         super().__init__(embeddings_path, onnx_path, device)
         self.image_folder = image_folder
-        self.dataset: torch.utils.data.Dataset = None
+        self.dataset: ImageFolder = None
         self.dataloader: torch.utils.data.DataLoader = None
 
         self.numpy_image_features: np.ndarray = None
@@ -150,3 +153,36 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
         self.init_data()
         self.numpy_image_features, self.image_paths, self.class_to_idx = self.get_image_folder_features()
         self.save_features(self.embeddings_path, self.numpy_image_features, self.image_paths, self.class_to_idx)
+
+
+def log_metrics(metrics: dict[str, float], save_path: str, model_name: str) -> None:
+    metrics = list(metrics.values())
+    for i, metric in enumerate(metrics):
+        metrics[i] = round(metric, 2)
+    results_save_path = Path(save_path)
+    with results_save_path.open("a", newline="", encoding="utf-8") as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow([model_name, *metrics])
+
+
+class DLClassifier(ABC):
+    def __init__(self, onnx_path: str, class_to_idx_path: str) -> None:
+        self.onnx_path = onnx_path
+        self.class_to_idx_path = class_to_idx_path
+
+        self.onnx_session = get_session(self.onnx_path)
+        self.idx_to_class = self.load_class_to_idx(self.class_to_idx_path)
+
+    @staticmethod
+    def load_class_to_idx(class_to_idx_path: str) -> dict[int, str]:
+        with Path(class_to_idx_path).open("rb") as file:
+            class_to_idx_numpy = np.load(file, allow_pickle=False)
+            return dict(zip(class_to_idx_numpy[:, 1].astype(int), class_to_idx_numpy[:, 0]))
+
+    @abstractmethod
+    def apply_transforms(self, image: Image.Image) -> torch.Tensor:
+        raise NotImplementedError
+
+    @abstractmethod
+    def predict(self, images: Sequence[Image.Image]) -> list[str]:
+        raise NotImplementedError

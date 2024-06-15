@@ -13,7 +13,7 @@ from PIL import Image
 
 from sneakers_ml.features.base import BaseFeatures
 from sneakers_ml.models.onnx_utils import get_session, predict
-from sneakers_ml.models.resnet152_classification_predict import Resnet152Classifier
+from sneakers_ml.models.resnet152_classification import Resnet152Classifier
 
 
 class Feature(TypedDict):

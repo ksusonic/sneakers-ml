@@ -8,8 +8,8 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from transformers import CLIPModel, CLIPProcessor, CLIPTextModelWithProjection
 
+from sneakers_ml.models.base import SimilaritySearchPredictor, SimilaritySearchTrainer
 from sneakers_ml.models.onnx_utils import predict_clip, save_clip_model
-from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor, SimilaritySearchTrainer
 
 
 class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
@@ -53,7 +53,7 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
         self.processor = CLIPProcessor.from_pretrained(clip_model_name)
 
     def get_features(self, text_query: Union[Sequence[str], str] = None) -> np.ndarray:
-        inputs = self.processor(text=text_query, return_tensors="np", padding=True)
+        inputs = self.processor(text=text_query, return_tensors="np", padding=True, truncation=True)
         return predict_clip(self.onnx_session, inputs)
 
     def predict(self, top_k: int, text_query: str = None) -> tuple[np.ndarray, np.ndarray]:
@@ -62,12 +62,12 @@ class CLIPTextToImageSimilaritySearch(SimilaritySearchPredictor):
 
 if __name__ == "__main__":
     # train
-    with initialize(version_base=None, config_path="../../config", job_name="text2image-features-create"):
-        cfg = compose(config_name="cfg_text_to_image")
-        trainer = CLIPSimilaritySearchTrainer(
-            cfg.images_path, cfg.base_model, cfg.model_path, cfg.embeddings_path, cfg.device
-        )
-        trainer.train()
+    # with initialize(version_base=None, config_path="../../config", job_name="text2image-features-create"):
+    #     cfg = compose(config_name="cfg_text_to_image")
+    #     trainer = CLIPSimilaritySearchTrainer(
+    #         cfg.images_path, cfg.base_model, cfg.model_path, cfg.embeddings_path, cfg.device
+    #     )
+    #     trainer.train()
 
     # predict
     with initialize(version_base=None, config_path="../../config", job_name="text2image-features-predict"):

@@ -10,8 +10,8 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from torchvision.models import ResNet152_Weights, resnet152
 
+from sneakers_ml.models.base import SimilaritySearchPredictor, SimilaritySearchTrainer
 from sneakers_ml.models.onnx_utils import predict, save_torch_model
-from sneakers_ml.models.similarity_search_base import SimilaritySearchPredictor, SimilaritySearchTrainer
 
 
 class Identity(nn.Module):
