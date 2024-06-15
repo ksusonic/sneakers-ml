@@ -2,16 +2,6 @@ version: "3.8"
 name: "sneakers-ml"
 
 services:
-  bot:
-    container_name: sneakers-ml-bot
-    build:
-      context: .
-      dockerfile: deploy/bot/Dockerfile
-    restart: always
-    environment:
-      - API_HOST=http://api:8000
-    env_file:
-      - .env
   api:
     container_name: sneakers-ml-api
     build:
@@ -29,6 +19,18 @@ services:
       - .env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
+  bot:
+    container_name: sneakers-ml-bot
+    build:
+      context: .
+      dockerfile: deploy/bot/Dockerfile
+    restart: always
+    depends_on:
+      - api
+    environment:
+      - API_HOST=http://api:8000
+    env_file:
+      - .env
   redis:
     container_name: sneakers-ml-redis
     image: redis:alpine

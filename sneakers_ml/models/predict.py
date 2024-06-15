@@ -14,6 +14,7 @@ from PIL import Image
 from sneakers_ml.features.base import BaseFeatures
 from sneakers_ml.models.onnx_utils import get_session, predict
 from sneakers_ml.models.resnet152_classification import Resnet152Classifier
+from sneakers_ml.models.vit_classification_predict import ViTClassifier
 
 
 class Feature(TypedDict):
@@ -44,7 +45,16 @@ class BrandsClassifier:
                 model_path = Path(self.config_ml.paths.models_save) / f"{feature}-{model}.onnx"
                 self.instances[feature]["model_instances"][model] = get_session(str(model_path))
 
-        self.dl_models = [Resnet152Classifier(config_dl)]
+        self.dl_models = {
+            "resnet152": Resnet152Classifier(
+                config_dl.models.resnet152.onnx_path, config_dl.models.resnet152.class_to_idx
+            ),
+            "vit": ViTClassifier(
+                config_dl.models.vit_transformer.onnx_path,
+                config_dl.models.vit_transformer.class_to_idx,
+                config_dl.models.vit_transformer.hf_name,
+            ),
+        }
         logger.info("Loaded resnet152 model")
 
         end_time = time.time()
@@ -72,10 +82,10 @@ class BrandsClassifier:
             predictions |= result
             string_predictions |= string_result
 
-        for model in self.dl_models:
+        for model_name, model in self.dl_models.items():
             pred = model.predict(images)
-            predictions["resnet152"] = pred
-            string_predictions["resnet152"] = pred
+            predictions[model_name] = pred
+            string_predictions[model_name] = pred
 
         return predictions, string_predictions
 

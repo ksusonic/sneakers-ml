@@ -1,29 +1,45 @@
 schema: '2.0'
 stages:
   build_models:
-    cmd: tar czf build/brand-cls-models.tar.gz data/models/brands-classification/
-      data/features/brands-classification/
+    cmd: tar czf build/brand-cls-models.tar.gz data/features/brands-classification/
+      data/merged-with-footshop/metadata/ data/models/brands-classification/ data/models/brands-classification-with-footshop/
+      data/models/similarity_search/
     deps:
     - path: data/features/brands-classification/
       hash: md5
       md5: 6d2ad3f4268710226cddb0ef7a05489c.dir
       size: 652366768
       nfiles: 12
+    - path: data/merged-with-footshop/metadata/
+      hash: md5
+      md5: ea0a3bdfcc849019c551ba6ee973e67d.dir
+      size: 3348536
+      nfiles: 4
+    - path: data/models/brands-classification-with-footshop/
+      hash: md5
+      md5: 86dec80daef9f21389a5bee7ddd87b39.dir
+      size: 808592644
+      nfiles: 7
     - path: data/models/brands-classification/
       hash: md5
-      md5: 2127fee74d33169203a9a886ec307f11.dir
-      size: 751872296
+      md5: 9ebcc430af5bf0240c1f510c59001c7a.dir
+      size: 751763563
       nfiles: 23
+    - path: data/models/similarity_search/
+      hash: md5
+      md5: 94a57395fe392e8abf9a2f34594aa43a.dir
+      size: 853218061
+      nfiles: 4
     outs:
     - path: build/brand-cls-models.tar.gz
       hash: md5
-      md5: e88a38e6940ef15e2e077ac6ba42e5df
-      size: 457804580
+      md5: d756b5d90f4a3e15689cc10137d7b61a
+      size: 2007366578
   upload_brand_classification_models:
     cmd: aws s3 cp build/brand-cls-models.tar.gz s3://sneaker-ml-models/brand-cls-models.tar.gz
       --endpoint-url https://storage.yandexcloud.net
     deps:
     - path: build/brand-cls-models.tar.gz
       hash: md5
-      md5: 4f4966aaa4ba1cffd7288ae97e138acc
-      size: 174796800
+      md5: d756b5d90f4a3e15689cc10137d7b61a
+      size: 2007366578

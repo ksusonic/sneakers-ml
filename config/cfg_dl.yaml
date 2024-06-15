@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - data: brands_classification
+  - data: brands_classification_with_footshop
   - models:
       - resnet152
       - vit_transformer
