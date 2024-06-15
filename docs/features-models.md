@@ -31,7 +31,6 @@
 | resnet152-svm           | 0.76     | 0.76     | 0.76        | 0.76     |
 | resnet152-sgd           | 0.72     | 0.74     | 0.74        | 0.74     |
 | resnet152-catboost      | 0.64     | 0.7      | 0.68        | 0.7      |
-| [DL]resnet152-finetune  | -        | 0.84     | 0.85        | -        |
 
 ### Removed подошвы с помощью UMAP
 
@@ -56,4 +55,7 @@
 | resnet152-svm           | 0.74     | 0.75     | 0.75        | 0.75     |
 | resnet152-sgd           | 0.67     | 0.69     | 0.7         | 0.69     |
 | resnet152-catboost      | 0.64     | 0.71     | 0.69        | 0.71     |
-| [DL]resnet152-finetune  | -        | 0.83     | 0.84        | -        |
+
+### DL на расширенном датасете (с footshop)
+
+todo

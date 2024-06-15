@@ -1,6 +1,6 @@
-vit_transformer:
+vit:
   hf_name: google/vit-base-patch16-224-in21k
-  name: vit-transformer
+  name: vit
   onnx_path: ${paths.models_save}/${.name}.onnx
   class_to_idx: ${paths.models_save}/${.name}-classes.npy
   dataloader:
@@ -9,4 +9,5 @@ vit_transformer:
     pin_memory: false
   optimizer:
     lr: 0.0002
-  num_epochs: 5
+    weight_decay: 0.01
+  num_epochs: 4

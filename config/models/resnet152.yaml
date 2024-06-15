@@ -1,5 +1,5 @@
 resnet152:
-  name: resnet152-dl
+  name: resnet152
   class_to_idx: ${paths.models_save}/${.name}-classes.npy
   onnx_path: ${paths.models_save}/${.name}.onnx
   dataloader:

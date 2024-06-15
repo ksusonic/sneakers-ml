@@ -1,4 +1,9 @@
 raw_data: data/raw
+features: data/features
+models: data/models
+results: ${.models}/${data.name}/results.csv
+models_save: ${.models}/${data.name}
+similarity_search: ${.models}/similarity_search
 
 merged:
   folder: data/merged
@@ -33,8 +38,3 @@ training:
     main: ${..folder}/${.name}
     filtered: ${..folder}/${.name}-filtered
     with_footshop: ${..folder}/${.name}-with-footshop
-
-features: data/features
-models: data/models
-results: ${paths.models}/${data.name}/results.csv
-models_save: ${paths.models}/${data.name}

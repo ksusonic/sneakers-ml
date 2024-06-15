@@ -1,5 +1,0 @@
-model_path: data/models/similarity_search/resnet152-similarity-search.onnx
-images_path: data/merged-with-footshop/images/by-models
-embeddings_path: data/models/similarity_search/resnet152-by-models-features.npy
-metadata_path: data/merged-with-footshop/metadata/full_dataset.csv
-device: cuda

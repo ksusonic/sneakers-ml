@@ -1,0 +1,12 @@
+defaults:
+  - _self_
+  - paths: default
+
+name: resnet152
+device: cuda
+
+images_path: ${paths.merged_with_footshop.images.models}
+metadata_path: ${paths.merged_with_footshop.metadata.full_dataset}
+
+model_path: ${paths.similarity_search}/${.name}-similarity-search.onnx
+embeddings_path: ${paths.similarity_search}/${.name}-by-models-features.npy
