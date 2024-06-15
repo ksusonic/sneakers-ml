@@ -5,6 +5,7 @@ import evaluate
 import numpy as np
 import torch
 import transformers
+import wandb
 from datasets import load_dataset
 from hydra import compose, initialize
 from loguru import logger
@@ -28,7 +29,7 @@ class ViTClassificationTrainer:
         self.set_training_args()
 
     def load_dataset(self) -> None:
-        self.processor = ViTImageProcessor.from_pretrained(self.cfg.models.vit_transformer.hf_name)
+        self.processor = ViTImageProcessor.from_pretrained(self.cfg.models.vit.hf_name)
         self.dataset = load_dataset("imagefolder", data_dir=self.cfg.data.path)
         self.processed_train = self.dataset["train"].with_transform(self.transform)
         self.processed_val = self.dataset["validation"].with_transform(self.transform)
@@ -42,23 +43,24 @@ class ViTClassificationTrainer:
 
         self.training_args = TrainingArguments(
             output_dir=self.temp_model_path,
-            per_device_train_batch_size=self.cfg.models.vit_transformer.dataloader.batch_size,
-            per_device_eval_batch_size=self.cfg.models.vit_transformer.dataloader.batch_size,
+            per_device_train_batch_size=self.cfg.models.vit.dataloader.batch_size,
+            per_device_eval_batch_size=self.cfg.models.vit.dataloader.batch_size,
             eval_strategy="steps",
-            num_train_epochs=self.cfg.models.vit_transformer.num_epochs,
+            num_train_epochs=self.cfg.models.vit.num_epochs,
             fp16=True,
             save_steps=500,
             eval_steps=500,
             logging_steps=500,
-            learning_rate=self.cfg.models.vit_transformer.optimizer.lr,
+            learning_rate=self.cfg.models.vit.optimizer.lr,
+            weight_decay=self.cfg.models.vit.optimizer.weight_decay,
             save_total_limit=2,
             remove_unused_columns=False,
             push_to_hub=False,
             report_to="wandb" if self.cfg.log_wandb else "none",
             load_best_model_at_end=True,
             dataloader_drop_last=False,
-            dataloader_pin_memory=self.cfg.models.vit_transformer.dataloader.pin_memory,
-            dataloader_num_workers=self.cfg.models.vit_transformer.dataloader.num_workers,
+            dataloader_pin_memory=self.cfg.models.vit.dataloader.pin_memory,
+            dataloader_num_workers=self.cfg.models.vit.dataloader.num_workers,
         )
 
     def load_model(self) -> None:
@@ -66,25 +68,22 @@ class ViTClassificationTrainer:
         self.id2label = {str(i): c for i, c in enumerate(labels)}
         self.label2id = {c: str(i) for i, c in enumerate(labels)}
         self.model = ViTForImageClassification.from_pretrained(
-            self.cfg.models.vit_transformer.hf_name,
+            self.cfg.models.vit.hf_name,
             num_labels=len(labels),
             id2label=self.id2label,
             label2id=self.label2id,
         )
 
-        with Path(self.cfg.models.vit_transformer.idx_to_classes).open("wb") as save_file:
-            np.save(save_file, np.array(list(self.label2id.items())), allow_pickle=False)
-
     def save_to_onnx(self) -> None:
         loaded_model = ViTForImageClassification.from_pretrained(self.temp_model_path)
         loaded_model.eval()
         torch_input = (torch.randn(1, 3, 224, 224),)
-        save_torch_model(loaded_model, torch_input, self.cfg.models.vit_transformer.onnx_path)
+        save_torch_model(loaded_model, torch_input, self.cfg.models.vit.onnx_path)
 
     def save_class_to_idx(self) -> None:
-        save_path = Path(self.cfg.models.vit_transformer.idx_to_classes)
+        save_path = Path(self.cfg.models.vit.class_to_idx)
         save_path.parent.mkdir(parents=True, exist_ok=True)
-        with Path(self.cfg.models.vit_transformer.idx_to_classes).open("wb") as save_file:
+        with save_path.open("wb") as save_file:
             np.save(save_file, np.array(list(self.label2id.items())), allow_pickle=False)
 
     def transform(self, example_batch: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
@@ -119,6 +118,7 @@ class ViTClassificationTrainer:
             eval_dataset=self.processed_val,
             tokenizer=self.processor,
         )
+        wandb.init(project="sneakers_ml")
 
         trainer.train()
         trainer.save_model()
@@ -134,7 +134,7 @@ class ViTClassificationTrainer:
 
         logger.info(str(true_metrics))
         self.save_to_onnx()
-        log_metrics(true_metrics, self.cfg.paths.results, self.cfg.models.vit_transformer.name)
+        log_metrics(true_metrics, self.cfg.paths.results, self.cfg.models.vit.name)
 
 
 class ViTClassifier(DLClassifier):
@@ -147,13 +147,13 @@ class ViTClassifier(DLClassifier):
     def apply_transforms(self, image: Image.Image) -> torch.Tensor:
         return self.preprocess(image, return_tensors="pt")["pixel_values"].squeeze(0)  # type: ignore[no-any-return]
 
-    def predict(self, images: Sequence[Image.Image]) -> tuple[list, list]:
+    def predict(self, images: Sequence[Image.Image]) -> list[str]:
         preprocessed_images = torch.stack([self.apply_transforms(image) for image in images])
         pred = predict(self.onnx_session, preprocessed_images)
         softmax_pred = softmax(pred, axis=1)
         predictions = np.argmax(softmax_pred, axis=1)
         string_predictions = np.vectorize(self.idx_to_class.get)(predictions)
-        return string_predictions.tolist()
+        return string_predictions.tolist()  # type: ignore[no-any-return]
 
 
 if __name__ == "__main__":
@@ -165,18 +165,18 @@ if __name__ == "__main__":
     # predict
     with initialize(version_base=None, config_path="../../config", job_name="vit-predict"):
         cfg_dl = compose(config_name="cfg_dl")
-        test_image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
+        test_image = Image.open("tests/static/newbalance574.jpg")
         print(
             ViTClassifier(
-                cfg_dl.models.vit_transformer.onnx_path,
-                cfg_dl.models.vit_transformer.class_to_idx,
-                cfg_dl.models.vit_transformer.hf_name,
+                cfg_dl.models.vit.onnx_path,
+                cfg_dl.models.vit.class_to_idx,
+                cfg_dl.models.vit.hf_name,
             ).predict([test_image])
         )
         print(
             ViTClassifier(
-                cfg_dl.models.vit_transformer.onnx_path,
-                cfg_dl.models.vit_transformer.class_to_idx,
-                cfg_dl.models.vit_transformer.hf_name,
+                cfg_dl.models.vit.onnx_path,
+                cfg_dl.models.vit.class_to_idx,
+                cfg_dl.models.vit.hf_name,
             ).predict([test_image, test_image, test_image])
         )

@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 import torch
@@ -12,6 +12,7 @@ from torchvision.models import ResNet152_Weights, resnet152
 
 from sneakers_ml.models.base import SimilaritySearchPredictor, SimilaritySearchTrainer
 from sneakers_ml.models.onnx_utils import predict, save_torch_model
+from sneakers_ml.models.quadrant import Qdrant
 
 
 class Identity(nn.Module):
@@ -24,9 +25,17 @@ class Identity(nn.Module):
 
 
 class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
-    def __init__(self, image_folder: str, onnx_path: str, embeddings_path: str, device: str) -> None:
-        super().__init__(image_folder=image_folder, embeddings_path=embeddings_path, onnx_path=onnx_path, device=device)
-        self.model: torch.nn.Module = None
+    def __init__(
+        self, image_folder: str, onnx_path: str, embeddings_path: str, device: str, qdrant: Optional[Qdrant] = None
+    ) -> None:
+        super().__init__(
+            image_folder=image_folder,
+            embeddings_path=embeddings_path,
+            onnx_path=onnx_path,
+            device=device,
+            qdrant=qdrant,
+        )
+        self.model: Optional[torch.nn.Module] = None
         self.preprocess = None
         self.weights: ResNet152_Weights.IMAGENET1K_V2 = None
 
@@ -55,34 +64,36 @@ class ResNet152SimilaritySearchTrainer(SimilaritySearchTrainer):
 
     def model_forward(self, data: Sequence[Any]) -> torch.Tensor:
         x = data[0].to(self.device)
-        return self.model(x).cpu()
+        return self.model(x).cpu()  # type: ignore[no-any-return]
 
 
 class ResNet152SimilaritySearch(SimilaritySearchPredictor):
-    def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str) -> None:
-        super().__init__(embeddings_path, onnx_path, metadata_path)
+    def __init__(
+        self, embeddings_path: str, onnx_path: str, metadata_path: str, qdrant: Optional[Qdrant] = None
+    ) -> None:
+        super().__init__(embeddings_path, onnx_path, metadata_path, qdrant=qdrant)
 
         self.weights = ResNet152_Weights.DEFAULT
         self.preprocess = self.weights.transforms()
 
-    def get_features(self, images: Sequence[Image.Image] = None) -> np.ndarray:
+    def get_features(self, images: Optional[Sequence[Image.Image]] = None) -> np.ndarray:
         preprocessed_images = torch.stack([self.preprocess(image) for image in images])
         return predict(self.onnx_session, preprocessed_images)
 
-    def predict(self, top_k: int, image: Image.Image = None) -> tuple[np.ndarray, np.ndarray]:
+    def predict(self, top_k: int, image: Optional[Image.Image] = None) -> tuple[np.ndarray, np.ndarray]:
         return self.get_similar(self.get_features([image]), top_k)
 
 
 if __name__ == "__main__":
     # train
-    with initialize(version_base=None, config_path="../../config", job_name="similarity-search-features-create"):
-        cfg = compose(config_name="cfg_similarity_search")
+    with initialize(version_base=None, config_path="../../config", job_name="resnet152-similarity-search-create"):
+        cfg = compose(config_name="cfg_resnet152_similarity_search")
         trainer = ResNet152SimilaritySearchTrainer(cfg.images_path, cfg.model_path, cfg.embeddings_path, cfg.device)
         trainer.train()
 
     # predict
-    with initialize(version_base=None, config_path="../../config", job_name="similarity-search-features-predict"):
-        cfg = compose(config_name="cfg_similarity_search")
+    with initialize(version_base=None, config_path="../../config", job_name="resnet152-similarity-search-predict"):
+        cfg = compose(config_name="cfg_resnet152_similarity_search")
         predictor = ResNet152SimilaritySearch(cfg.embeddings_path, cfg.model_path, cfg.metadata_path)
-        test_image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
+        test_image = Image.open("tests/static/newbalance574.jpg")
         print(predictor.predict(3, test_image))

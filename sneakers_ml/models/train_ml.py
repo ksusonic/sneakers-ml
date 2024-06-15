@@ -73,5 +73,5 @@ def train(cfg: DictConfig) -> None:
 if __name__ == "__main__":
     train()  # pylint: disable=no-value-for-parameter
 
-# python sneakers_ml/models/train.py -m
-# data=brands_classification,brands_classification_filtered,brands_classification_with_footshop
+# python sneakers_ml/models/train.py
+# -m data=brands_classification,brands_classification_filtered,brands_classification_with_footshop

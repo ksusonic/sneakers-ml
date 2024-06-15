@@ -2,7 +2,7 @@ import csv
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -11,17 +11,23 @@ import torch.utils
 import torch.utils.data
 from PIL import Image
 from sklearn.metrics.pairwise import cosine_similarity
-from torchvision.datasets import ImageFolder
 from tqdm import tqdm
 
 from sneakers_ml.models.onnx_utils import get_device, get_session
+from sneakers_ml.models.quadrant import Qdrant
+
+if TYPE_CHECKING:
+    from torchvision.datasets import ImageFolder
 
 
 class SimilaritySearchBase(ABC):  # noqa: B024
-    def __init__(self, embeddings_path: str, onnx_path: str, device: str = "cpu") -> None:
+    def __init__(
+        self, embeddings_path: str, onnx_path: str, device: str = "cpu", qdrant: Optional[Qdrant] = None
+    ) -> None:
         self.embeddings_path = embeddings_path
         self.onnx_path = onnx_path
         self.device = get_device(device)
+        self.qdrant = qdrant
 
     @staticmethod
     def save_features(path: str, numpy_features: np.ndarray, classes: np.ndarray, class_to_idx: dict[str, int]) -> None:
@@ -43,16 +49,24 @@ class SimilaritySearchBase(ABC):  # noqa: B024
 
 
 class SimilaritySearchPredictor(SimilaritySearchBase):
-    def __init__(self, embeddings_path: str, onnx_path: str, metadata_path: str, device: str = "cpu") -> None:
-        super().__init__(embeddings_path, onnx_path, device)
+    def __init__(
+        self,
+        embeddings_path: str,
+        onnx_path: str,
+        metadata_path: str,
+        device: str = "cpu",
+        qdrant: Optional[Qdrant] = None,
+    ) -> None:
+        super().__init__(embeddings_path, onnx_path, device, qdrant)
 
         self.metadata_path = metadata_path
-        self.df = self.get_metadata(self.metadata_path)
+        self.metadata_df = self.get_metadata(self.metadata_path)
 
-        self.numpy_features, self.classes, self.class_to_idx = self.load_features(self.embeddings_path)
-        self.idx_to_class = {str(v): k for k, v in self.class_to_idx.items()}
+        if not qdrant:
+            self.numpy_features, self.classes, self.class_to_idx = self.load_features(self.embeddings_path)
+            self.idx_to_class = {str(v): k for k, v in self.class_to_idx.items()}
 
-        self.onnx_session = get_session(self.onnx_path)
+        self.onnx_session = get_session(self.onnx_path, self.device)
 
     @abstractmethod
     def get_features(self) -> np.ndarray:
@@ -63,31 +77,32 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
         raise NotImplementedError
 
     def get_metadata(self, metadata_path: str) -> pd.DataFrame:
-        df = pd.read_csv(metadata_path)
-        df = df.drop(
+        metadata_df = pd.read_csv(metadata_path)
+        metadata_df = metadata_df.drop(
             ["brand_merge", "images_path", "collection_name", "color", "images_flattened", "title_without_color"],
             axis=1,
         )
-        df["title"] = df["title"].apply(eval)
-        df["brand"] = df["brand"].apply(eval)
-        df["price"] = df["price"].apply(eval)
-        df["pricecurrency"] = df["pricecurrency"].apply(eval)
-        df["website"] = df["website"].apply(eval)
-        df["url"] = df["url"].apply(eval)
-        df = df.explode(["title", "brand", "price", "pricecurrency", "url", "website"])
-
-        return df
+        metadata_df["title"] = metadata_df["title"].apply(eval)
+        metadata_df["brand"] = metadata_df["brand"].apply(eval)
+        metadata_df["price"] = metadata_df["price"].apply(eval)
+        metadata_df["pricecurrency"] = metadata_df["pricecurrency"].apply(eval)
+        metadata_df["website"] = metadata_df["website"].apply(eval)
+        metadata_df["url"] = metadata_df["url"].apply(eval)
+        return metadata_df.explode(["title", "brand", "price", "pricecurrency", "url", "website"])
 
     def get_similar(self, feature: np.ndarray, top_k: int) -> tuple[np.ndarray, np.ndarray]:
-        similarity_matrix = cosine_similarity(self.numpy_features, feature).flatten()
-        top_k_indices = np.argsort(similarity_matrix)[-top_k:][::-1]
+        if self.qdrant:
+            similar_images, similar_models = self.qdrant.get_similar(feature, top_k)
+        else:
+            similarity_matrix = cosine_similarity(self.numpy_features, feature).flatten()
+            top_k_indices = np.argsort(similarity_matrix)[-top_k:][::-1]
 
-        similar_objects = self.classes[top_k_indices]
-        similar_images = similar_objects[:, 0]
-        similar_models = np.vectorize(self.idx_to_class.get)(similar_objects[:, 1])
+            similar_objects = self.classes[top_k_indices]
+            similar_images = similar_objects[:, 0]
+            similar_models = np.vectorize(self.idx_to_class.get)(similar_objects[:, 1])
 
         similar_metadata_dump = (
-            self.df[self.df["title_merge"].isin(np.unique(similar_models).tolist())]
+            self.metadata_df[self.metadata_df["title_merge"].isin(np.unique(similar_models).tolist())]
             .groupby(["title", "website"])
             .agg(
                 {
@@ -108,11 +123,18 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
 
 
 class SimilaritySearchTrainer(SimilaritySearchBase):
-    def __init__(self, image_folder: str, embeddings_path: str, onnx_path: str, device: str = "cpu") -> None:
-        super().__init__(embeddings_path, onnx_path, device)
+    def __init__(
+        self,
+        image_folder: str,
+        embeddings_path: str,
+        onnx_path: str,
+        device: str = "cpu",
+        qdrant: Optional[Qdrant] = None,
+    ) -> None:
+        super().__init__(embeddings_path, onnx_path, device, qdrant)
         self.image_folder = image_folder
         self.dataset: ImageFolder = None
-        self.dataloader: torch.utils.data.DataLoader = None
+        self.dataloader: torch.utils.data.DataLoader[Any] = None
 
         self.numpy_image_features: np.ndarray = None
         self.image_paths: np.ndarray = None
@@ -149,20 +171,13 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
 
     def train(self) -> None:
         self.init_model()
-        self.create_onnx_model()
         self.init_data()
         self.numpy_image_features, self.image_paths, self.class_to_idx = self.get_image_folder_features()
-        self.save_features(self.embeddings_path, self.numpy_image_features, self.image_paths, self.class_to_idx)
-
-
-def log_metrics(metrics: dict[str, float], save_path: str, model_name: str) -> None:
-    metrics = list(metrics.values())
-    for i, metric in enumerate(metrics):
-        metrics[i] = round(metric, 2)
-    results_save_path = Path(save_path)
-    with results_save_path.open("a", newline="", encoding="utf-8") as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow([model_name, *metrics])
+        if self.qdrant:
+            self.qdrant.save_features_quadrant(self.numpy_image_features, self.image_paths, self.class_to_idx)
+        else:
+            self.save_features(self.embeddings_path, self.numpy_image_features, self.image_paths, self.class_to_idx)
+        self.create_onnx_model()
 
 
 class DLClassifier(ABC):
@@ -186,3 +201,19 @@ class DLClassifier(ABC):
     @abstractmethod
     def predict(self, images: Sequence[Image.Image]) -> list[str]:
         raise NotImplementedError
+
+
+def log_metrics(metrics: dict[str, float], save_path: str, model_name: str) -> None:
+    list_metrics = list(metrics.values())
+    for i, metric in enumerate(metrics):
+        list_metrics[i] = round(metric, 2)
+    results_save_path = Path(save_path)
+
+    if not results_save_path.exists():
+        with results_save_path.open("w", newline="", encoding="utf-8") as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow(["model_name", "f1_macro", "f1_micro", "f1_weighted", "accuracy"])
+
+    with results_save_path.open("a", newline="", encoding="utf-8") as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow([model_name, *list_metrics])

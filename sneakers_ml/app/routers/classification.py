@@ -40,7 +40,7 @@ async def post_image_to_classify(image: UploadFile):
         return cached_prediction
 
     start_time = time.time()
-    predictions = predictor.predict(images=[image])[1]
+    predictions = predictor.predict(images=[image])
     end_time = time.time()
     logger.info("Predicted {} in {} seconds", predictions, end_time - start_time)
 

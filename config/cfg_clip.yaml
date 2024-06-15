@@ -1,0 +1,17 @@
+defaults:
+  - _self_
+  - paths: default
+
+base_model: openai/clip-vit-base-patch32
+name: clip
+device: cuda
+
+images_path: ${paths.merged_with_footshop.images.models}
+metadata_path: ${paths.merged_with_footshop.metadata.full_dataset}
+
+text_model_path: ${paths.similarity_search}/${.name}-text2image-search.onnx
+vision_model_path: ${paths.similarity_search}/${.name}-similarity-search.onnx
+embeddings_path: ${paths.similarity_search}/${.name}-by-models-features.npy
+
+qdrant_path: ${paths.similarity_search}/qdrant
+qdrant_collection_name: ${.name}

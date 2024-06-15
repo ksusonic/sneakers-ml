@@ -9,6 +9,7 @@
 - Реализовали телеграмм-бот, CI/CD Docker-образа в Registry
 - Документация проекта в .md файлах в /docs
 - Основной код в .py файлах, ноутбуки используем только как черновик
+- Метрики логируем в wandb
 
 ## Описание директорий
 
@@ -22,9 +23,8 @@ sneakers-ml
 │   ├── raw               - папка со спаршенными данными
 │   └── training          - папка с преобразованными для тренировки данными, сплиты на тренировку и валидацию
 ├── deploy                - деплой сервиса
-│   ├── app               - FastAPI
-│   └── bot               - телеграм бот
-├── docker-compose.local.yml
+│   ├── app               - FastAPI DockerFile
+│   └── bot               - TelegramBot DockerFile
 ├── docker-compose.yml
 ├── docs                  - документацичя проекта
 ├── LICENSE
@@ -33,11 +33,10 @@ sneakers-ml
 ├── poetry.lock
 ├── pyproject.toml
 ├── README.md
-├── run-app.sh            - скрипт для запуска FastAPI сервера
 └── sneakers_ml
-    ├── app
-    ├── bot
-    ├── data              - скрипты для парсинга, чистки и объединения данных
-    ├── features          - скрипты для генерации эмбеддингов
-    └── models            - скрипты для обучения моделей
+    ├── app               - код FastAPI
+    ├── bot               - код Telegram Bot
+    ├── data              - код для парсинга, чистки и объединения данных
+    ├── features          - код для генерации эмбеддингов
+    └── models            - код для обучения моделей
 ```

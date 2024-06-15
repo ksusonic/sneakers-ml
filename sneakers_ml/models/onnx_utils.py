@@ -25,7 +25,9 @@ def get_session(model_path: str, device: str = "cpu") -> rt.InferenceSession:
     return rt.InferenceSession(model_path, providers=providers)
 
 
-def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor, model_path: str) -> None:
+def save_torch_model(
+    model: torch.nn.Module, torch_input_tensor: Union[torch.Tensor, tuple[torch.Tensor]], model_path: str
+) -> None:
     save_path = Path(model_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
     torch.onnx.export(
@@ -38,7 +40,7 @@ def save_torch_model(model: torch.nn.Module, torch_input_tensor: torch.Tensor, m
     )
 
 
-def save_clip_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Tensor], model_path: str) -> None:
+def save_clip_text_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Tensor], model_path: str) -> None:
     save_path = Path(model_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -52,6 +54,25 @@ def save_clip_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Ten
             "input_ids": {0: "batch_size", 1: "sequence_length"},
             "attention_mask": {0: "batch_size", 1: "sequence_length"},
             "text_features": {0: "batch_size"},
+        },
+        opset_version=13,
+    )
+
+
+def save_clip_vision_model(model: torch.nn.Module, torch_input_tensors: tuple[torch.Tensor], model_path: str) -> None:
+    save_path = Path(model_path)
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    torch.onnx.export(
+        model,
+        torch_input_tensors,
+        model_path,
+        input_names=["pixel_values"],
+        output_names=["image_embeds", "last_hidden_state"],
+        dynamic_axes={
+            "pixel_values": {0: "batch_size"},
+            "image_embeds": {0: "batch_size"},
+            "last_hidden_state": {0: "batch_size"},
         },
         opset_version=13,
     )
@@ -111,10 +132,17 @@ def predict(onnx_session: rt.InferenceSession, x: Union[np.ndarray, torch.Tensor
     return onnx_session.run([output_name], {input_name: input_value})[0]  # type: ignore[no-any-return]
 
 
-def predict_clip(onnx_session: rt.InferenceSession, x: dict[str, np.array]) -> np.ndarray:
+def predict_clip_text(onnx_session: rt.InferenceSession, x: dict[str, np.ndarray]) -> np.ndarray:
     input_name_1 = onnx_session.get_inputs()[0].name
     input_name_2 = onnx_session.get_inputs()[1].name
     output_name = onnx_session.get_outputs()[0].name
     x[input_name_1] = x[input_name_1].astype(np.int64)
     x[input_name_2] = x[input_name_2].astype(np.int64)
     return onnx_session.run([output_name], dict(x))[0]  # type: ignore[no-any-return]
+
+
+def predict_clip_image(onnx_session: rt.InferenceSession, x: dict[str, np.ndarray]) -> np.ndarray:
+    # input_name = onnx_session.get_inputs()[0].name
+    output_name_1 = onnx_session.get_outputs()[0].name
+    # output_name_2 = onnx_session.get_outputs()[1].name
+    return onnx_session.run([output_name_1], dict(x))[0]  # type: ignore[no-any-return]

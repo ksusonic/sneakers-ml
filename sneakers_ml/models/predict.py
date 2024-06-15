@@ -14,7 +14,7 @@ from PIL import Image
 from sneakers_ml.features.base import BaseFeatures
 from sneakers_ml.models.onnx_utils import get_session, predict
 from sneakers_ml.models.resnet152_classification import Resnet152Classifier
-from sneakers_ml.models.vit_classification_predict import ViTClassifier
+from sneakers_ml.models.vit_classification import ViTClassifier
 
 
 class Feature(TypedDict):
@@ -46,53 +46,47 @@ class BrandsClassifier:
                 self.instances[feature]["model_instances"][model] = get_session(str(model_path))
 
         self.dl_models = {
-            "resnet152": Resnet152Classifier(
+            config_dl.models.resnet152.name: Resnet152Classifier(
                 config_dl.models.resnet152.onnx_path, config_dl.models.resnet152.class_to_idx
             ),
-            "vit": ViTClassifier(
-                config_dl.models.vit_transformer.onnx_path,
-                config_dl.models.vit_transformer.class_to_idx,
-                config_dl.models.vit_transformer.hf_name,
+            config_dl.models.vit.name: ViTClassifier(
+                config_dl.models.vit.onnx_path,
+                config_dl.models.vit.class_to_idx,
+                config_dl.models.vit.hf_name,
             ),
         }
-        logger.info("Loaded resnet152 model")
+        logger.info("Loaded dl models: " + ", ".join(self.dl_models.keys()))
 
         end_time = time.time()
         logger.info(f"All models loaded in {end_time - start_time:.1f} seconds")
 
-    def _predict_feature(
-        self, feature_name: str, images: Sequence[Image.Image]
-    ) -> tuple[dict[str, np.ndarray], dict[str, list[str]]]:
-        result: dict[str, np.ndarray] = {}
+    def _predict_feature(self, feature_name: str, images: Sequence[Image.Image]) -> dict[str, list[str]]:
         string_result: dict[str, list[str]] = {}
         embedding = self.instances[feature_name]["feature_instance"].get_features(images)
-        ind_to_class = self.instances[feature_name]["idx_to_class"]
+        idx_to_class = self.instances[feature_name]["idx_to_class"]
         for model_name, model in self.instances[feature_name]["model_instances"].items():
             pred = predict(model, embedding).astype(np.int32)
-            result[f"{feature_name}-{model_name}"] = pred
-            string_result[f"{feature_name}-{model_name}"] = [ind_to_class.get(i) for i in pred]
+            string_result[f"{feature_name}-{model_name}"] = [idx_to_class[i] for i in pred]
+        return string_result
 
-        return result, string_result
-
-    def predict(self, images: Sequence[Image.Image]) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray]]:
-        predictions: dict[str, np.ndarray] = {}
-        string_predictions: dict[str, np.ndarray] = {}
+    def predict(self, images: Sequence[Image.Image]) -> dict[str, list[str]]:
+        string_predictions: dict[str, list[str]] = {}
         for feature_name in self.instances:
-            result, string_result = self._predict_feature(feature_name, images)
-            predictions |= result
+            string_result = self._predict_feature(feature_name, images)
             string_predictions |= string_result
 
         for model_name, model in self.dl_models.items():
             pred = model.predict(images)
-            predictions[model_name] = pred
             string_predictions[model_name] = pred
 
-        return predictions, string_predictions
+        return string_predictions
 
 
 if __name__ == "__main__":
     with initialize(version_base=None, config_path="../../config", job_name="ml-predict"):
-        cfg = compose(config_name="cfg_ml")
-        image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
-        print(BrandsClassifier(cfg).predict([image]))
-        print(BrandsClassifier(cfg).predict([image, image, image]))
+        cfg_ml = compose(config_name="cfg_ml")
+    with initialize(version_base=None, config_path="../../config", job_name="ml-predict"):
+        cfg_dl = compose(config_name="cfg_dl")
+    image = Image.open("tests/static/newbalance574.jpg")
+    print(BrandsClassifier(cfg_ml, cfg_dl).predict([image]))
+    print(BrandsClassifier(cfg_ml, cfg_dl).predict([image, image, image]))

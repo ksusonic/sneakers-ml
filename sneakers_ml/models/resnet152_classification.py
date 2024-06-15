@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
@@ -59,7 +60,7 @@ class ResNet152ClassificationTrainer:
         self.load_model()
         self.set_training_args()
 
-    def get_dataloader(self, dataset: torch.utils.data.Dataset) -> DataLoader:
+    def get_dataloader(self, dataset: torch.utils.data.Dataset[Any]) -> DataLoader[Any]:
         return DataLoader(
             dataset,
             batch_size=self.cfg.models.resnet152.dataloader.batch_size,
@@ -78,7 +79,7 @@ class ResNet152ClassificationTrainer:
         self.test_dataloader = self.get_dataloader(self.test_dataset)
 
     def save_class_to_idx(self) -> None:
-        save_path = Path(self.cfg.models.resnet152.idx_to_classes)
+        save_path = Path(self.cfg.models.resnet152.class_to_idx)
         save_path.parent.mkdir(parents=True, exist_ok=True)
         class_to_idx = self.train_dataset.class_to_idx
         with save_path.open("wb") as save_file:
@@ -180,13 +181,12 @@ class ResNet152ClassificationTrainer:
         if self.cfg.log_wandb:
             wandb.finish()
 
-        loss, f1_macro, f1_micro, f1_weighted, accuracy = self.eval_epoch()
+        _, f1_macro, f1_micro, f1_weighted, accuracy = self.eval_epoch()
         metrics = {
             "test_f1_macro": f1_macro,
             "test_f1_micro": f1_micro,
             "test_f1_weighted": f1_weighted,
             "test_accuracy": accuracy,
-            "test_loss": loss,
         }
 
         logger.info(str(metrics))
@@ -211,7 +211,7 @@ class Resnet152Classifier(DLClassifier):
         softmax_pred = softmax(pred, axis=1)
         predictions = np.argmax(softmax_pred, axis=1)
         string_predictions = np.vectorize(self.idx_to_class.get)(predictions)
-        return string_predictions.tolist()
+        return string_predictions.tolist()  # type: ignore[no-any-return]
 
 
 if __name__ == "__main__":
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     # predict
     with initialize(version_base=None, config_path="../../config", job_name="resnet152-predict"):
         cfg_dl = compose(config_name="cfg_dl")
-        test_image = Image.open("data/training/brands-classification/train/adidas/1.jpeg")
+        test_image = Image.open("tests/static/newbalance574.jpg")
         print(
             Resnet152Classifier(
                 cfg_dl.models.resnet152.onnx_path,
