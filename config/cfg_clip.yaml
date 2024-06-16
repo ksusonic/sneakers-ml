@@ -13,5 +13,6 @@ text_model_path: ${paths.similarity_search}/${.name}-text2image-search.onnx
 vision_model_path: ${paths.similarity_search}/${.name}-similarity-search.onnx
 embeddings_path: ${paths.similarity_search}/${.name}-by-models-features.npy
 
-qdrant_path: ${paths.similarity_search}/qdrant
+qdrant_host: localhost
+qdrant_port: 6333
 qdrant_collection_name: ${.name}
