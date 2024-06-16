@@ -1,6 +1,11 @@
 name: Build api docker image
 
 on:
+  pull_request:
+    paths:
+      - sneakers_ml/app/**
+      - sneakers_ml/models/**
+      - config/**
   push:
     branches:
       - trunk
@@ -35,3 +40,4 @@ jobs:
           docker-image-tag: latest
           dockerfile-path: deploy/app/Dockerfile
           build-context: .
+          build-only: ${{ !startsWith(github.head_ref, 'refs/heads/trunk') }}
