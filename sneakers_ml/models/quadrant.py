@@ -4,9 +4,10 @@ from qdrant_client.models import Distance, PointStruct, VectorParams
 
 
 class Qdrant:
-    def __init__(self, client_path: str, collection_name: str) -> None:
-        self.client_path = client_path
-        self.client = QdrantClient(path=self.client_path)
+    def __init__(self, host: str, port: int, collection_name: str) -> None:
+        self.host = host
+        self.port = port
+        self.client = QdrantClient(host=self.host, port=self.port)
         self.collection_name = collection_name
 
     def create_collection(self, vector_size: int) -> None:
@@ -15,9 +16,7 @@ class Qdrant:
             vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
         )
 
-    def save_features_quadrant(
-        self, numpy_features: np.ndarray, classes: np.ndarray, class_to_idx: dict[str, int]
-    ) -> None:
+    def save_features(self, numpy_features: np.ndarray, classes: np.ndarray, class_to_idx: dict[str, int]) -> None:
 
         self.create_collection(vector_size=numpy_features.shape[1])
 
@@ -34,7 +33,6 @@ class Qdrant:
                     },
                 )
             )
-
         self.client.upsert(collection_name=self.collection_name, points=points)
 
     def get_similar(self, feature: np.ndarray, top_k: int) -> tuple[np.ndarray, np.ndarray]:

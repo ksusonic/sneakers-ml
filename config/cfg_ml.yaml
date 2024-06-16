@@ -2,16 +2,16 @@ defaults:
   - _self_
   - data: brands_classification
   - features:
-      - hog
-      - sift
-      - resnet152
+      # - hog
+      # - sift
+      # - resnet152
   - models:
-      - log_reg
-      - random_forest
-      - decision_tree
-      - svm
-      - sgd
-      - catboost
+      # - log_reg
+      # - random_forest
+      # - decision_tree
+      # - svm
+      # - sgd
+      # - catboost
   - metrics:
       - f1_macro
       - f1_micro
