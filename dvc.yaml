@@ -1,15 +1,11 @@
 stages:
   build_models:
     cmd: tar czf build/brand-cls-models.tar.gz
-      data/features/brands-classification/
       data/merged-with-footshop/metadata/
-      data/models/brands-classification/
       data/models/brands-classification-with-footshop/
       data/models/similarity_search/
     deps:
-      - data/features/brands-classification/
       - data/merged-with-footshop/metadata/
-      - data/models/brands-classification/
       - data/models/brands-classification-with-footshop/
       - data/models/similarity_search/
     outs:

@@ -3649,13 +3649,13 @@ sympy = "*"
 
 [[package]]
 name = "onnxscript"
-version = "0.1.0.dev20240615"
+version = "0.1.0.dev20240616"
 description = "Naturally author ONNX functions and models using a subset of Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "onnxscript-0.1.0.dev20240615-py3-none-any.whl", hash = "sha256:e1c29e9b36ddd0aa3d04466c7d4a7aab99b61575e8f4c31af6801d27acdeaa16"},
-    {file = "onnxscript-0.1.0.dev20240615.tar.gz", hash = "sha256:49dc8d1a70e620ba303204abfea8a62c622b42748e03b8548c09fce5c2aea4ff"},
+    {file = "onnxscript-0.1.0.dev20240616-py3-none-any.whl", hash = "sha256:1b87c3f53c91bc4c6c53288f774578d1ceb90a1f9f2e2cefcd8c73a7b8f1dda4"},
+    {file = "onnxscript-0.1.0.dev20240616.tar.gz", hash = "sha256:12ff31cd0e411c3a1fe4b9c83036aa980b5f9c120a6e929782fade55bf7d7437"},
 ]
 
 [package.dependencies]

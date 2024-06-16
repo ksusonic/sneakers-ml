@@ -9,10 +9,11 @@ from PIL import Image
 
 from sneakers_ml.app.config import config
 from sneakers_ml.app.models.image import Response
+from sneakers_ml.app.service.qdrant import QDRANT_CLIENT
 from sneakers_ml.app.service.redis import RedisCache
-from sneakers_ml.models.resnet152_similarity_search import ResNet152SimilaritySearch
+from sneakers_ml.models.clip import CLIPSimilaritySearch
 
-searcher: ResNet152SimilaritySearch = None
+searcher: CLIPSimilaritySearch = None
 redis = RedisCache(host=config.redis_host, port=config.redis_port)
 
 router: APIRouter = APIRouter(prefix="/similarity-search", tags=["similarity-search"])
@@ -22,10 +23,13 @@ router: APIRouter = APIRouter(prefix="/similarity-search", tags=["similarity-sea
 async def load_model():
     configs_rel_path = os.path.relpath(config.ml_config_path, start=os.path.dirname(os.path.abspath(__file__)))
     with initialize(version_base=None, config_path=str(configs_rel_path), job_name="fastapi"):
-        cfg = compose(config_name="cfg_similarity_search")
+        cfg = compose(config_name="cfg_clip")
+
         global searcher
-        searcher = ResNet152SimilaritySearch(cfg.embeddings_path, cfg.model_path, cfg.metadata_path)
-    logger.info("Loaded ResNet152SimilaritySearch")
+        searcher = CLIPSimilaritySearch(
+            cfg.embeddings_path, cfg.vision_model_path, cfg.metadata_path, cfg.base_model, QDRANT_CLIENT
+        )
+    logger.info("Loaded CLIPSimilaritySearch")
 
 
 @router.post("/upload/")

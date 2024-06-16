@@ -7,6 +7,7 @@ from loguru import logger
 
 from sneakers_ml.app.config import config
 from sneakers_ml.app.models.image import Request, Response
+from sneakers_ml.app.service.qdrant import QDRANT_CLIENT
 from sneakers_ml.app.service.redis import RedisCache
 from sneakers_ml.models.clip import CLIPTextToImageSimilaritySearch
 
@@ -20,10 +21,10 @@ router: APIRouter = APIRouter(prefix="/text-to-image", tags=["text-to-image"])
 async def load_model():
     configs_rel_path = os.path.relpath(config.ml_config_path, start=os.path.dirname(os.path.abspath(__file__)))
     with initialize(version_base=None, config_path=str(configs_rel_path), job_name="fastapi"):
-        cfg = compose(config_name="cfg_text_to_image")
+        cfg = compose(config_name="cfg_clip")
         global searcher
         searcher = CLIPTextToImageSimilaritySearch(
-            cfg.embeddings_path, cfg.model_path, cfg.metadata_path, cfg.base_model
+            cfg.embeddings_path, cfg.text_model_path, cfg.metadata_path, cfg.base_model, QDRANT_CLIENT
         )
     logger.info("Loaded CLIPTextToImageSimilaritySearch")
 

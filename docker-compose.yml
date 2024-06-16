@@ -9,16 +9,31 @@ services:
       dockerfile: deploy/app/Dockerfile
     restart: always
     depends_on:
-      - redis
+      - qdrant
     ports:
       - "8000:8000"
     environment:
       - PORT=8000
       - REDIS_HOST=redis
+      - QDRANT_HOST=qdrant
     env_file:
       - .env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
+  qdrant:
+    container_name: sneakers-ml-qdrant
+    image: qdrant/qdrant
+    restart: always
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+  #  redis:
+  #    container_name: sneakers-ml-redis
+  #    image: redis:alpine
+  #    ports:
+  #      - "6379:6379"
+  #    restart: always
   bot:
     container_name: sneakers-ml-bot
     build:
@@ -31,15 +46,8 @@ services:
       - API_HOST=http://api:8000
     env_file:
       - .env
-  redis:
-    container_name: sneakers-ml-redis
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-    restart: always
-    volumes:
-      - redis-data:/data
 
 volumes:
-  redis-data:
+  #  redis:
+  qdrant-data:
     driver: local
