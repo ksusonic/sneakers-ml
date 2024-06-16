@@ -9,14 +9,14 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 from transformers import CLIPModel, CLIPProcessor, CLIPTextModelWithProjection, CLIPVisionModelWithProjection
 
-from sneakers_ml.models.base import SimilaritySearchPredictor, SimilaritySearchTrainer
+from sneakers_ml.models.base import SimilaritySearchBase, SimilaritySearchPredictor, SimilaritySearchTrainer
 from sneakers_ml.models.onnx_utils import (
     predict_clip_image,
     predict_clip_text,
     save_clip_text_model,
     save_clip_vision_model,
 )
-from sneakers_ml.models.quadrant import Qdrant
+from sneakers_ml.models.qdrant import Qdrant
 
 
 class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):
@@ -133,9 +133,26 @@ if __name__ == "__main__":
         test_image = Image.open("tests/static/newbalance574.jpg")
         print(predictor.predict(3, test_image))
 
-    # # create qdrant vectors
-    # with initialize(version_base=None, config_path="../../config", job_name="qdrant-clip-create"):
-    #     cfg = compose(config_name="cfg_clip")
-    #     test_qdrant = Qdrant(cfg.qdrant_path, cfg.qdrant_collection_name)
-    #     numpy_features, classes, class_to_idx = SimilaritySearchBase.load_features(cfg.embeddings_path)
-    #     test_qdrant.save_features_quadrant(numpy_features, classes, class_to_idx)
+    # create qdrant vectors
+    with initialize(version_base=None, config_path="../../config", job_name="qdrant-clip-create"):
+        cfg = compose(config_name="cfg_clip")
+        test_qdrant = Qdrant(cfg.qdrant_host, cfg.qdrant_port, cfg.qdrant_collection_name)
+        numpy_features, classes, class_to_idx = SimilaritySearchBase.load_features(cfg.embeddings_path)
+        test_qdrant.save_features(numpy_features, classes, class_to_idx)
+
+    # predict text qdrant
+    with initialize(version_base=None, config_path="../../config", job_name="clip-text2image-predict"):
+        cfg = compose(config_name="cfg_clip")
+        predictor = CLIPTextToImageSimilaritySearch(
+            cfg.embeddings_path, cfg.text_model_path, cfg.metadata_path, cfg.base_model, test_qdrant
+        )
+        print(predictor.predict(3, "blue sneakers"))
+
+    # predict image qdrant
+    with initialize(version_base=None, config_path="../../config", job_name="clip-similarity-search-predict"):
+        cfg = compose(config_name="cfg_clip")
+        predictor = CLIPSimilaritySearch(
+            cfg.embeddings_path, cfg.vision_model_path, cfg.metadata_path, cfg.base_model, test_qdrant
+        )
+        test_image = Image.open("tests/static/newbalance574.jpg")
+        print(predictor.predict(3, test_image))

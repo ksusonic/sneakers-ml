@@ -3,7 +3,7 @@ defaults:
   - data: brands_classification_with_footshop
   - models:
       - resnet152
-      - vit
+      # - vit
   - paths: default
 
 project_name: sneakers_ml
