@@ -15,23 +15,23 @@ services:
     image: ghcr.io/miem-refugees/sneakers-ml-api:trunk
     restart: always
     depends_on:
-      - redis
+      - qdrant
     ports:
       - "8000:8000"
     environment:
       - PORT=8000
-      - REDIS_HOST=redis
+      - QDRANT_HOST=qdrant
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/ping"]
-  redis:
-    container_name: sneakers-ml-redis
-    image: redis:alpine
-    ports:
-      - "6379:6379"
+  qdrant:
+    container_name: sneakers-ml-qdrant
+    image: qdrant/qdrant
     restart: always
+    ports:
+      - "6333:6333"
     volumes:
-      - redis-data:/data
+      - qdrant-data:/qdrant/storage
 
 volumes:
-  redis-data:
+  qdrant-data:
     driver: local

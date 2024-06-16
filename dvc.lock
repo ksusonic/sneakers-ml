@@ -1,15 +1,9 @@
 schema: '2.0'
 stages:
   build_models:
-    cmd: tar czf build/brand-cls-models.tar.gz data/features/brands-classification/
-      data/merged-with-footshop/metadata/ data/models/brands-classification/ data/models/brands-classification-with-footshop/
-      data/models/similarity_search/
+    cmd: tar czf build/brand-cls-models.tar.gz data/merged-with-footshop/metadata/
+      data/models/brands-classification-with-footshop/ data/models/similarity_search/
     deps:
-    - path: data/features/brands-classification/
-      hash: md5
-      md5: 6d2ad3f4268710226cddb0ef7a05489c.dir
-      size: 652366768
-      nfiles: 12
     - path: data/merged-with-footshop/metadata/
       hash: md5
       md5: ea0a3bdfcc849019c551ba6ee973e67d.dir
@@ -17,29 +11,24 @@ stages:
       nfiles: 4
     - path: data/models/brands-classification-with-footshop/
       hash: md5
-      md5: c9bc6077a6058e32225c09a5fda01a64.dir
-      size: 576143853
-      nfiles: 5
-    - path: data/models/brands-classification/
-      hash: md5
-      md5: 9ebcc430af5bf0240c1f510c59001c7a.dir
-      size: 751763563
-      nfiles: 23
+      md5: cc136daad390e42ba003be0e328bedf6.dir
+      size: 232612934
+      nfiles: 3
     - path: data/models/similarity_search/
       hash: md5
-      md5: c79ac93f7289b051a8556e8dbcd53cdb.dir
-      size: 1204916481
-      nfiles: 5
+      md5: eab737eba7faf327cc6d91cf5999304d.dir
+      size: 696957138
+      nfiles: 3
     outs:
     - path: build/brand-cls-models.tar.gz
       hash: md5
-      md5: f3b25168ed2ee679a391244ca85d00a0
-      size: 1998343634
+      md5: c2deb591312c9d8700cd08f72945a343
+      size: 665920025
   upload_brand_classification_models:
     cmd: aws s3 cp build/brand-cls-models.tar.gz s3://sneaker-ml-models/brand-cls-models.tar.gz
       --endpoint-url https://storage.yandexcloud.net
     deps:
     - path: build/brand-cls-models.tar.gz
       hash: md5
-      md5: f3b25168ed2ee679a391244ca85d00a0
-      size: 1998343634
+      md5: c2deb591312c9d8700cd08f72945a343
+      size: 665920025
