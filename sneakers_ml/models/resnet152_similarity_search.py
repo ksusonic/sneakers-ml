@@ -12,7 +12,7 @@ from torchvision.models import ResNet152_Weights, resnet152
 
 from sneakers_ml.models.base import SimilaritySearchPredictor, SimilaritySearchTrainer
 from sneakers_ml.models.onnx_utils import predict, save_torch_model
-from sneakers_ml.models.quadrant import Qdrant
+from sneakers_ml.models.qdrant import Qdrant
 
 
 class Identity(nn.Module):

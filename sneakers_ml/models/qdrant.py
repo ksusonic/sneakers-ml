@@ -33,7 +33,7 @@ class Qdrant:
                     },
                 )
             )
-        self.client.upsert(collection_name=self.collection_name, points=points)
+        self.client.upload_points(collection_name=self.collection_name, points=points, parallel=4, max_retries=3)
 
     def get_similar(self, feature: np.ndarray, top_k: int) -> tuple[np.ndarray, np.ndarray]:
         similar_objects = self.client.search(

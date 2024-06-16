@@ -16,7 +16,7 @@ from sneakers_ml.models.onnx_utils import (
     save_clip_text_model,
     save_clip_vision_model,
 )
-from sneakers_ml.models.quadrant import Qdrant
+from sneakers_ml.models.qdrant import Qdrant
 
 
 class CLIPSimilaritySearchTrainer(SimilaritySearchTrainer):

@@ -14,7 +14,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from tqdm import tqdm
 
 from sneakers_ml.models.onnx_utils import get_device, get_session
-from sneakers_ml.models.quadrant import Qdrant
+from sneakers_ml.models.qdrant import Qdrant
 
 if TYPE_CHECKING:
     from torchvision.datasets import ImageFolder
@@ -174,7 +174,7 @@ class SimilaritySearchTrainer(SimilaritySearchBase):
         self.init_data()
         self.numpy_image_features, self.image_paths, self.class_to_idx = self.get_image_folder_features()
         if self.qdrant:
-            self.qdrant.save_features_quadrant(self.numpy_image_features, self.image_paths, self.class_to_idx)
+            self.qdrant.save_features(self.numpy_image_features, self.image_paths, self.class_to_idx)
         else:
             self.save_features(self.embeddings_path, self.numpy_image_features, self.image_paths, self.class_to_idx)
         self.create_onnx_model()
