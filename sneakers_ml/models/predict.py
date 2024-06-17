@@ -92,6 +92,10 @@ class BrandsClassifier:
             pred = model.predict(images)
             string_predictions[model_name] = pred
 
+        if len(string_predictions) == 1:
+            old_name = next(iter(string_predictions))
+            string_predictions["Brand prediction"] = string_predictions.pop(old_name)
+
         return string_predictions
 
 
