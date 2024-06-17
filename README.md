@@ -23,7 +23,7 @@ ML часть проекта будет заключатся в обучении
 
 ## Пример работы телеграм бота
 
-![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
+![ezgif-1-e48f2978e8](https://github.com/miem-refugees/sneakers-ml/assets/57370975/d53f6ec9-729b-42bf-8f84-94d116886fd0)
 
 ## Roadmap
 
