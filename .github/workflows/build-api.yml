@@ -3,6 +3,7 @@ name: Build api docker image
 on:
   pull_request:
     paths:
+      - .github
       - sneakers_ml/app/**
       - sneakers_ml/models/**
       - config/**
