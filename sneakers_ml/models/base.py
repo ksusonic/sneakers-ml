@@ -108,7 +108,7 @@ class SimilaritySearchPredictor(SimilaritySearchBase):
                 {
                     "title_merge": "first",
                     "brand": "first",
-                    "price": lambda x: f"{min(x)} - {max(x)}",
+                    "price": lambda x: f"{min(x)} - {max(x)}" if min(x) != max(x) else str(min(x)),
                     "pricecurrency": "first",
                     "url": "first",
                 }
