@@ -59,3 +59,4 @@ jobs:
           file: deploy/app/Dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          github-token: ${{ secrets.GITHUB_TOKEN }}
