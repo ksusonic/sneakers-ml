@@ -20,25 +20,18 @@ jobs:
     name: Build API
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Login to GHCR
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io/my-org
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: pmorelli92/github-container-registry-build-push@2.2.1
-        name: Build and Publish latest service image
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
         with:
-          github-push-secret: ${{secrets.GITHUB_TOKEN}}
-          docker-image-name: sneakers-ml-api
-          docker-image-tag: latest
-          dockerfile-path: deploy/app/Dockerfile
-          build-context: .
-          build-only: ${{ !startsWith(github.head_ref, 'refs/heads/trunk') }}
+          push: true
+          file: deploy/app/Dockerfile
+          tags: miem-refugees/sneakers-ml-api:latest,miem-refugees/sneakers-ml-api:trunk
