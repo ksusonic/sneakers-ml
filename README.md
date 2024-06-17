@@ -10,7 +10,7 @@
 ML часть проекта будет заключатся в обучении классификаторов изображений кроссовок по брендам.
 В DL части будет улучшено качество классификации с помощью продвинутных моделей, а так же решены другие задачи,
 такие как similarity search и text2image.
-В результате полученные модели будут обернуты в телеграм бот или streamlit сервис.
+В результате полученные модели будут обернуты в Telegram Bot.
 
 ## Документация проекта
 
@@ -24,19 +24,6 @@ ML часть проекта будет заключатся в обучении
 ## Пример работы телеграм бота
 
 ![ezgif-3-a70e75c32f](https://github.com/miem-refugees/sneakers-ml/assets/57370975/0ded53d5-479d-458a-b1ed-3675b3e1f71c)
-
-## Прогресс и задачи
-
-- На текущий момент обучили лучшую модель классификации Resnet152 в
-  [черновике-ноутбуке](notebooks/models/resnet_fine_tune.ipynb)
-- Планируем раскидать код ноутбука по файлам, возможно использовать
-  PyTorch Lightning
-- Хотим попробовать Vision Transformer
-- Далее будем решать другие задачи, такие как image2image поиск, similarity
-  learning, text2image
-- Улучшение telegram-бота, интеграция API с Streamlit
-- Сборка датасета из изображений от пользователей через бота
-- Логирование, мониторинг и алерты production-окружений (streamlit, tg-bot)
 
 ## Roadmap
 
@@ -54,6 +41,8 @@ ML часть проекта будет заключатся в обучении
   - [x] Настроить poetry
   - [x] Добавление линтеров и форматеров
   - [x] Добавление pre-commit
+  - [x] CI/CD
+  - [x] Docker
 - [x] **Получение эмбеддингов**
   - [x] SIFT
   - [x] HOG
@@ -74,9 +63,10 @@ ML часть проекта будет заключатся в обучении
 - [x] **Обёртка моделей**
   - [x] FastAPI
   - [x] Telegram bot
-- [x] **similarity learning (resnet152)**
-- [x] **text2image (clip)**
-- [ ] quadrant vector db
+- [x] **Image similarity search ResNet152**
+- [x] **Image similarity search (CLIP)**
+- [x] **text2image (CLIP)**
+- [x] **Saving embeddings in Qdrant vector db**
 
 ## Начало работы
 
@@ -110,4 +100,4 @@ docker-compose up
 ## Список членов команды
 
 - Литвинов Вячеслав [@searayeah](https://github.com/searayeah)
-- Моисеев Даниил ‎ ‎ ‎ ‎ ‎ [@ksusonic](https://github.com/ksusonic)
+- Моисеев Даниил [@ksusonic](https://github.com/ksusonic)

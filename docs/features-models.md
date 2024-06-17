@@ -58,4 +58,12 @@
 
 ### DL на расширенном датасете (с footshop)
 
-todo
+| model_name | f1_macro | f1_micro | f1_weighted | accuracy |
+| ---------- | -------- | -------- | ----------- | -------- |
+| resnet152  | 0.85     | 0.88     | 0.88        | 0.88     |
+| vit        | 0.83     | 0.87     | 0.87        | 0.87     |
+
+### WandB reports
+
+- [VIT Transfromer](https://wandb.ai/seara/sneakers_ml/reports/VIT-Transformer-training--Vmlldzo4MzU5NDU4?accessToken=jhgdcem57rtkd4979sth86mckltwev0gi6zi24od29d2ntgkzy4wy9m69uqfvisn)
+- [ResNet152](https://wandb.ai/seara/sneakers_ml/reports/ResNet152-training--Vmlldzo4MzU5NDc0?accessToken=2yiofxgf5jcgx95o77ahgxnp6wlwsvv9d2zwty4in90u4lz85mv4shciytzp95ov)

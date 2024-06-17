@@ -105,5 +105,6 @@ python sneakers_ml/features/base.py
 Обучение моделей
 
 ```shell
-python sneakers_ml/models/train.py
+python sneakers_ml/models/train_ml.py
+python sneakers_ml/models/resnet152_classification.py
 ```
