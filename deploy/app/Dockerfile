@@ -36,9 +36,9 @@ COPY config /app/config
 COPY sneakers_ml /app/sneakers_ml
 
 # Models binaries
-#ADD https://storage.yandexcloud.net/sneaker-ml-models/brand-cls-models.tar.gz ./
+ADD https://storage.yandexcloud.net/sneaker-ml-models/brand-cls-models.tar.gz ./
 # or use local add
-ADD ./build/brand-cls-models.tar.gz ./
+#ADD ./build/brand-cls-models.tar.gz ./
 
 EXPOSE 8000
 ENTRYPOINT [ "uvicorn", "sneakers_ml.app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]
