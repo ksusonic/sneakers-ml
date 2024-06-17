@@ -63,7 +63,7 @@ ML часть проекта будет заключатся в обучении
 - [x] **Обёртка моделей**
   - [x] FastAPI
   - [x] Telegram bot
-- [x] **Image similarity search ResNet152**
+- [x] **Image similarity search (ResNet152)**
 - [x] **Image similarity search (CLIP)**
 - [x] **text2image (CLIP)**
 - [x] **Saving embeddings in Qdrant vector db**
