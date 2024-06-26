@@ -1,18 +1,18 @@
-version: 2
+# version: 2
 
-updates:
-  - package-ecosystem: pip
-    directory: /
-    schedule:
-      interval: weekly
-    groups:
-      python-packages:
-        patterns: ["*"]
+# updates:
+#   - package-ecosystem: pip
+#     directory: /
+#     schedule:
+#       interval: weekly
+#     groups:
+#       python-packages:
+#         patterns: ["*"]
 
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-    groups:
-      actions:
-        patterns: ["*"]
+#   - package-ecosystem: github-actions
+#     directory: /
+#     schedule:
+#       interval: weekly
+#     groups:
+#       actions:
+#         patterns: ["*"]
