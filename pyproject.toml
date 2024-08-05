@@ -21,9 +21,9 @@ numpy = "^2.0.1"
 pandas = "^2.2.2"
 scipy = "^1.13.0"
 # onnx stuff
-onnxscript = "^0.1.0.dev20240729"
+onnxscript = "^0.1.0.dev20240805"
 onnxruntime = "^1.17.3"
-onnx = "^1.15.0"
+onnx = "^1.16.2"
 skl2onnx = "^1.16.0"
 # ml libs
 catboost = "^1.2.5"
@@ -62,7 +62,7 @@ requests = "^2.32.0"
 # data cleaning
 split-folders = "^0.5.1"
 pandarallel = "^1.6.5"
-tqdm = "^4.66.3"
+tqdm = "^4.66.5"
 # visualizations
 matplotlib = "^3.9.1"
 seaborn = "^0.13.0"
@@ -72,7 +72,7 @@ umap-learn = "^0.5.6"
 optional = true
 
 [tool.poetry.group.bot.dependencies]
-aiohttp = "^3.9.5"
+aiohttp = "^3.10.1"
 python-telegram-bot = "^21.4"
 loguru = "^0.7.2"
 
@@ -80,13 +80,13 @@ loguru = "^0.7.2"
 optional = true
 
 [tool.poetry.group.api.dependencies]
-boto3 = "^1.34.149"
-fastapi = "^0.111.1"
+boto3 = "^1.34.153"
+fastapi = "^0.112.0"
 pydantic = "^2.8.2"
-pydantic-settings = "^2.3.4"
+pydantic-settings = "^2.4.0"
 python-multipart = "^0.0.9"
-redis = "^5.0.7"
-uvicorn = "^0.30.3"
+redis = "^5.0.8"
+uvicorn = "^0.30.5"
 
 [tool.poetry.group.test]
 optional = true
@@ -105,13 +105,13 @@ optional = true
 pre-commit = "^3.8.0"
 # for vscode
 isort = "^5.13.2"
-black = "^24.4.2"
-flake8 = "^7.0.0"
+black = "^24.8.0"
+flake8 = "^7.1.1"
 flake8-bugbear = "^24.4.26"
 flake8-simplify = "^0.21.0"
 flake8-pyproject = "^1.2.3"
-ruff = "^0.5.5"
-mypy = "^1.11.0"
+ruff = "^0.5.6"
+mypy = "^1.11.1"
 pylint = "^3.2.6"
 # stubs for mypy type checking and code completions
 typing-extensions = "^4.12.1"
@@ -119,7 +119,7 @@ pandas-stubs = "^2.2.1.240316"
 types-pillow = "^10.2.0.20240423"
 types-beautifulsoup4 = "^4.12.0.20240229"
 types-tqdm = "^4.66.0.20240417"
-types-seaborn = "^0.13.2.20240417"
+types-seaborn = "^0.13.2.20240804"
 
 [tool.black]
 line-length = 120
